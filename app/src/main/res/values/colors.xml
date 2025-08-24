@@ -3,4 +3,23 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primarycolor">#2FAA92</color>
-</resources>
+        <color name="dark_background">#121212</color>
+        <color name="dark_card">#1E1E1E</color>
+        <color name="gray_300">#B3B3B3</color>
+        <color name="teal_200">#80CBC4</color>
+        <color name="teal_700">#00796B</color>
+    <color name="md_theme_dark_primary">#BB86FC</color>
+    <color name="md_theme_dark_onPrimary">#000000</color>
+    <color name="md_theme_dark_primaryContainer">#3700B3</color>
+    <color name="md_theme_dark_onPrimaryContainer">#FFFFFF</color>
+
+    <color name="md_theme_dark_secondary">#03DAC6</color>
+    <color name="md_theme_dark_onSecondary">#000000</color>
+    <color name="md_theme_dark_secondaryContainer">#018786</color>
+    <color name="md_theme_dark_onSecondaryContainer">#FFFFFF</color>
+
+    <color name="md_theme_dark_background">#121212</color>
+    <color name="md_theme_dark_onBackground">#FFFFFF</color>
+    <color name="md_theme_dark_surface">#1E1E1E</color>
+    <color name="md_theme_dark_onSurface">#FFFFFF</color>
+    </resources>

@@ -164,7 +164,7 @@
         android:layout_marginTop="30dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp"
-        app:strokeColor="@android:color/black"
+        app:strokeColor="#e6e7eb"
         app:strokeWidth="1dp"
         app:cardBackgroundColor="@color/white">
 
@@ -285,8 +285,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#f7f7f7">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -323,8 +324,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#f7f7f7">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -366,8 +368,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#f7f7f7">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -400,8 +403,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#f7f7f7">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -438,9 +442,20 @@
         android:layout_marginLeft="0dp"
         android:textSize="25sp"
         android:id="@+id/TodaysScheduleTxt"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@+id/TodaysScheduleTxt"
+        android:text="Add"
+        android:textColor="#2faa92"
+        android:layout_marginRight="10dp"/>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/TodaysScheduleCard"
         android:layout_below="@id/TodaysScheduleTxt"
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="#f7f7f7"
@@ -510,6 +525,7 @@
                     android:textSize="16sp"
                     android:textColor="#333333"/>
 
+
                 <!-- checked state -->
                 <ImageView
                     android:layout_width="24dp"
@@ -578,11 +594,136 @@
                     />
             </LinearLayout>
 
-
-
-            <!-- Add more rows as needed -->
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Health Insights"
+        android:layout_below="@id/TodaysScheduleCard"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="0dp"
+        android:textSize="25sp"
+        android:id="@+id/HealthInsights"/>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/HealthInsights"
+        android:layout_marginTop="16dp"
+        android:scrollbars="none"
+        android:layout_marginBottom="100dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <!-- First Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <!-- Icon (already with circle background) -->
+                    <ImageView
+                        android:id="@+id/imgBulb"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_bulb"
+                        android:layout_gravity="center"/>
+
+                    <!-- Text Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="12dp">
+
+                        <TextView
+                            android:id="@+id/HealthInsightsFirstCardTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tip of the Day"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Stay hydrated! Aim for 8 glasses of water daily."
+                            android:textSize="18sp"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Second Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <!-- Icon (already with circle background) -->
+                    <ImageView
+                        android:id="@+id/imgMeal"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_cloche"
+                        android:layout_gravity="center"/>
+
+                    <!-- Text Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="12dp">
+
+                        <TextView
+                            android:id="@+id/HealthInsightsSecondCardTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Meal of the Day"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Eat a healthy diet for easy and quick digestion."
+                            android:textSize="18sp"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </RelativeLayout>
 </ScrollView>

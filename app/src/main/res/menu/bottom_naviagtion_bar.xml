@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_selector"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/nav_monitor"
+        android:icon="@drawable/ic_monitor_selector"
+        android:title="Monitor" />
+
+    <item
+        android:id="@+id/nav_medications"
+        android:icon="@drawable/ic_menu_selector"
+        android:title="Medications" />
+
+    <item
+        android:id="@+id/nav_fithub"
+        android:icon="@drawable/ic_heart_selector"
+        android:title="FitHub" />
+
+    <item
+        android:id="@+id/nav_dr_gpt"
+        android:icon="@drawable/ic_message_selector"
+        android:title="Dr.GPT" />
+
+</menu>

@@ -13,7 +13,19 @@
         android:theme="@style/Theme.ChronicCare"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".DrGPTActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FitHubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MedicationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MonitorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
