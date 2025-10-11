@@ -20,9 +20,9 @@
             android:id="@+id/fithubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="FitHub"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="28sp" />
 
         <TextView
             android:id="@+id/fithubDesc"
@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/fithubTitle"
             android:layout_marginTop="0dp"
+            android:fontFamily="sans-serif"
             android:text="Stay fit, Live happier."
             android:textColor="#4c5663"
             android:textSize="18sp" />
@@ -50,8 +51,10 @@
             android:layout_height="80dp"
             android:layout_below="@id/fithubDesc"
             android:layout_marginTop="15dp"
+            android:fontFamily="sans-serif"
             android:orientation="vertical"
             android:padding="1dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,11 +140,11 @@
             android:id="@+id/MealPlanText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="Today's Meal Plan"
             android:layout_marginTop="8dp"
             android:layout_below="@id/FithubActions"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="28sp" />
 
         <!-- Meal Cards Section (Horizontal ScrollView with new detailed card replica) -->
         <HorizontalScrollView
@@ -200,7 +203,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Oatmeal with Berries"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
+                                android:fontFamily="sans-serif"
                                 android:textColor="#333333"
                                 android:layout_marginBottom="6dp" />
 
@@ -318,7 +321,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Grilled Salmon Salad"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
+                                android:fontFamily="sans-serif"
                                 android:textColor="#333333"
                                 android:layout_marginBottom="6dp" />
 
@@ -421,7 +424,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Veggie Chicken Wrap"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
+                                android:fontFamily="sans-serif"
                                 android:textColor="#333333"
                                 android:layout_marginBottom="6dp" />
 
@@ -499,7 +502,7 @@
             android:layout_marginTop="24dp"
             android:layout_below="@id/meal_cards_scroll"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:fontFamily="sans-serif" />
 
         <!-- Quick Workouts Videos (Horizontal ScrollView) -->
         <HorizontalScrollView
@@ -548,7 +551,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginBottom="20dp"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="sans-serif" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -603,7 +606,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginBottom="20dp"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="sans-serif" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -657,7 +660,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginBottom="20dp"
                             android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="sans-serif" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -683,7 +686,7 @@
             android:layout_marginTop="24dp"
             android:layout_below="@id/video_scroll"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:fontFamily="sans-serif" />
 
         <!-- Articles List (Vertical LinearLayout) -->
         <LinearLayout
