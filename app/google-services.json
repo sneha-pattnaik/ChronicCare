@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "829722955209",
+    "project_id": "chroniccare-287b7",
+    "storage_bucket": "chroniccare-287b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829722955209:android:8b1594c7e4a51ae2996c18",
+        "android_client_info": {
+          "package_name": "com.example.chroniccare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNtIwLylBPrYmYrNRYLJDFidH365fxne8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
