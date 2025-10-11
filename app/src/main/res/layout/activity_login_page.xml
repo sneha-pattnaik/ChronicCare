@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomePage"
+    tools:context="WelcomePage"
     android:background="#E8F2F5">
 
     <ImageView
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginTop="65dp"
-        android:fontFamily="@font/popinsbold"
+        android:fontFamily="sans-serif"
         android:text="Welcome Back!"
         android:textColor="@color/black"
         android:textSize="32dp"
@@ -41,7 +41,7 @@
         android:id="@+id/signintxt"
         android:layout_below="@id/welcometext"
         android:textSize="32dp"
-        android:fontFamily="@font/poppinsmed"
+        android:fontFamily="sans-serif"
         android:text="Sign in to Continue!"
         android:textColor="@color/black"
         android:layout_centerHorizontal="true"/>
@@ -108,7 +108,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="12dp"
                 android:layout_marginBottom="3dp"
-                android:src="@drawable/ic_eyeclose"
+                android:fontFamily="sans-serif"
                 android:clickable="true"
                 android:focusable="true" />
         </RelativeLayout>
@@ -137,7 +137,7 @@
                 android:textSize="14sp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:fontFamily="@font/popinsbold" />
+                android:fontFamily="sans-serif" />
 
             <!-- Right Line -->
             <View
@@ -154,7 +154,8 @@
             android:layout_below="@id/paswordBox"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
-            android:background="@drawable/social_button_bg"
+            android:background="#dddddd"
+            android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:orientation="horizontal"
@@ -172,7 +173,7 @@
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/poppinsmed"/>
+                android:fontFamily="sans-serif"/>
         </LinearLayout>
 
         <!-- Instagram Login Button -->
@@ -183,7 +184,7 @@
             android:layout_below="@id/btnGoogle"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:background="@drawable/social_button_bg"
+            android:background="#dddddd"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:orientation="horizontal"
@@ -201,7 +202,7 @@
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/poppinsmed"/>
+                android:fontFamily="sans-serif"/>
         </LinearLayout>
 
         <!-- Main Login Button -->
@@ -217,7 +218,7 @@
             android:textAllCaps="true"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:fontFamily="@font/popinsbold" />
+            android:fontFamily="sans-serif" />
 
         <!-- Forgot Password -->
         <TextView
@@ -230,7 +231,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:textColor="#000000"
-            android:fontFamily="@font/popinsreg"
+            android:fontFamily="sans-serif"
             android:shadowColor="#22000000"
             android:shadowRadius="2"
             android:layout_centerInParent="true"/>
@@ -245,7 +246,7 @@
             android:text="Don't have an account ? "
             android:textColor="#000000"
             android:textSize="12sp"
-            android:fontFamily="@font/popinsreg"
+            android:fontFamily="sans-serif"
             android:layout_marginLeft="65dp"
             />
 
@@ -258,7 +259,7 @@
             android:textSize="12sp"
             android:layout_toEndOf="@id/signupText"
             android:layout_alignBaseline="@id/signupText"
-            android:fontFamily="@font/popinsbold"
+            android:fontFamily="sans-serif"
             android:clickable="true"/>
 
     </RelativeLayout>
