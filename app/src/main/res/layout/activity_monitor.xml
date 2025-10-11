@@ -167,7 +167,18 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
+            <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/livedata_card"
+                android:layout_marginTop="20dp"
+                android:id="@+id/chartGlucose"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/chartGlucose"
+                android:id="@+id/comparision"
+                android:layout_marginTop="20dp"/>
 
         </RelativeLayout>
     </LinearLayout>
