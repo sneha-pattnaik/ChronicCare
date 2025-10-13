@@ -51,7 +51,7 @@ public class HomeActivity extends BottomNavActivity {
         nextMedicationName = findViewById(R.id.NextMedicationName);
         medTiming = findViewById(R.id.MedTiming);
         logFoodCard = findViewById(R.id.LogFood);
-        btnTestAlarm = findViewById(R.id.btnTestAlarm);
+
 
         nextMedicationTime = Calendar.getInstance();
         nextMedicationTime.add(Calendar.MINUTE, 15);
