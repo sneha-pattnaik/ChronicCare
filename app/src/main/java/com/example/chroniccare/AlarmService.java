@@ -69,7 +69,7 @@ public class AlarmService {
         );
     }
 
-    private static void cancelSpecificReminder(Context context, String medicationId, String medName, int requestCode) {
+    static void cancelSpecificReminder(Context context, String medicationId, String medName, int requestCode) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
         PendingIntent pendingIntent = getPendingIntent(context, medicationId, medName, requestCode);
