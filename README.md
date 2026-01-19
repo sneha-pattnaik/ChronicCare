@@ -32,7 +32,7 @@
 
 <p style="line-height:1.7;">
   This project was developed for <b>Hackanovation 1.0</b> and secured
-  <b>3rd position</b> among participating teams.
+  <b>3rd position</b> among 100+ participating teams.
 </p>
 
 <hr/>
