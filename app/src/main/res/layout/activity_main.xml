@@ -478,139 +478,26 @@
         app:cardElevation="0dp"
         app:strokeColor="@android:color/white">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:maxHeight="200dp">
 
-            <!-- Row Item -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="6dp">
+                android:orientation="vertical"
+                android:id="@+id/todaysScheduleContainer"
+                android:padding="12dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8:30 AM"
-                    android:textSize="16sp"
-                    android:textColor="#1a1a1a"
-                    android:layout_marginRight="16dp"/>
+                <!-- Dynamic schedule items will be added here -->
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Morning Medication"
-                    android:textSize="16sp"
-                    android:textColor="#333333"/>
-
-                <!-- unchecked state -->
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_unchecked"
-                    />
             </LinearLayout>
 
-            <!-- Repeat Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="6dp">
+        </androidx.core.widget.NestedScrollView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8:30 AM"
-                    android:textSize="16sp"
-                    android:textColor="#1a1a1a"
-                    android:layout_marginRight="16dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Morning Medication"
-                    android:textSize="16sp"
-                    android:textColor="#333333"/>
-
-
-                <!-- checked state -->
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_checked"
-                   />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8:30 AM"
-                    android:textSize="16sp"
-                    android:textColor="#1a1a1a"
-                    android:layout_marginRight="16dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Morning Medication"
-                    android:textSize="16sp"
-                    android:textColor="#333333"/>
-
-                <!-- checked state -->
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_checked"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="8:30 AM"
-                    android:textSize="16sp"
-                    android:textColor="#1a1a1a"
-                    android:layout_marginRight="16dp"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Morning Medication"
-                    android:textSize="16sp"
-                    android:textColor="#333333"/>
-
-                <!-- checked state -->
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_unchecked"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

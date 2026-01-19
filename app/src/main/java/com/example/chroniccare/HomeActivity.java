@@ -5,6 +5,10 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +17,11 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,6 +44,11 @@ public class HomeActivity extends BottomNavActivity {
 
     // Quick actions (CardView in XML)
     private CardView logFoodCard, logExerciseCard, viewReportsCard, contactDoctorCard;
+
+    // Today's Schedule
+    private LinearLayout todaysScheduleContainer;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
 
     // Logic
     private Calendar nextMedicationTime;
@@ -60,6 +74,7 @@ public class HomeActivity extends BottomNavActivity {
         updateUserName(account);
         updateInitialReadings();
         updateNextMedication();
+        loadTodaysSchedule();
 
         setupClickListeners();
     }
@@ -84,6 +99,10 @@ public class HomeActivity extends BottomNavActivity {
         logExerciseCard = findViewById(R.id.LogExercise);
         viewReportsCard = findViewById(R.id.ViewReports);
         contactDoctorCard = findViewById(R.id.ContactDoctor);
+
+        todaysScheduleContainer = findViewById(R.id.todaysScheduleContainer);
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         random = new Random();
 
@@ -181,6 +200,9 @@ public class HomeActivity extends BottomNavActivity {
 
         logExerciseCard.setOnClickListener(v ->
                 startActivity(new Intent(this, LogExercise.class)));
+
+        findViewById(R.id.AddMediaction).setOnClickListener(v ->
+                startActivity(new Intent(this, AddMedications.class)));
     }
 
     @Override
@@ -191,6 +213,86 @@ public class HomeActivity extends BottomNavActivity {
     @Override
     protected int getBottomNavMenuItemId() {
         return R.id.nav_home;
+    }
+
+    //today's schedule section
+    private void loadTodaysSchedule() {
+        String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
+        if (userId == null) return;
+
+        // Get today's start and end timestamps for filtering
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+
+        firestore.collection("users").document(userId).collection("medications")
+                .whereGreaterThanOrEqualTo("timestamp", new Timestamp(startOfDay.getTime()))
+                .whereLessThanOrEqualTo("timestamp", new Timestamp(endOfDay.getTime()))
+                .orderBy("timestamp")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    todaysScheduleContainer.removeAllViews();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        addMedicationRow(document);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading medications", e));
+    }
+
+    private void addMedicationRow(QueryDocumentSnapshot document) {
+        View rowView = LayoutInflater.from(this).inflate(R.layout.schedule_row_item, todaysScheduleContainer, false);
+        
+        TextView scheduleTime = rowView.findViewById(R.id.scheduleTime);
+        TextView scheduleTitle = rowView.findViewById(R.id.scheduleTitle);
+        ImageView scheduleStatusIcon = rowView.findViewById(R.id.scheduleStatusIcon);
+        
+        String name = document.getString("name");
+        String time = document.getString("time");
+        Boolean taken = document.getBoolean("taken");
+        Timestamp takenAt = document.getTimestamp("takenAt");
+        
+        scheduleTime.setText(time != null ? time : "");
+        scheduleTitle.setText(name != null ? name : "");
+        scheduleStatusIcon.setImageResource(Boolean.TRUE.equals(taken) ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        
+        scheduleStatusIcon.setOnClickListener(v -> handleMedicationClick(document, taken, takenAt));
+        
+        todaysScheduleContainer.addView(rowView);
+    }
+
+    private void handleMedicationClick(QueryDocumentSnapshot document, Boolean taken, Timestamp takenAt) {
+        if (Boolean.TRUE.equals(taken)) {
+            // Already taken - show when it was taken
+            if (takenAt != null) {
+                String takenTime = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(takenAt.toDate());
+                Toast.makeText(this, "Taken at " + takenTime, Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        // Mark as taken with current timestamp (immutable write)
+        String userId = auth.getCurrentUser().getUid();
+        Timestamp now = Timestamp.now();
+        
+        firestore.collection("users").document(userId).collection("medications")
+                .document(document.getId())
+                .update("taken", true, "takenAt", now)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Medication taken", Toast.LENGTH_SHORT).show();
+                    loadTodaysSchedule(); // Refresh UI
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating medication", e);
+                    Toast.makeText(this, "Error updating medication", Toast.LENGTH_SHORT).show();
+                });
     }
 
 

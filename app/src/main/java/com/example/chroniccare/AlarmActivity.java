@@ -94,6 +94,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Toast.makeText(this, "Select 'Take Now' or 'Will Take Later'", Toast.LENGTH_SHORT).show();
     }
 }
