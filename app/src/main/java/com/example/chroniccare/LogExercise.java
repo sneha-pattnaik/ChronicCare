@@ -3,9 +3,14 @@ package com.example.chroniccare;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class LogExerciseActivity extends AppCompatActivity {
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class LogExercise extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +28,13 @@ public class LogExerciseActivity extends AppCompatActivity {
         Button btnStartExercise = findViewById(R.id.btnStartExercise);
         btnStartExercise.setOnClickListener(v -> {
             // Replace this with actual navigation logic (e.g., starting a new intent)
-            Toast.makeText(LogExerciseActivity.this, "Starting a new exercise session!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LogExercise.this, "Starting a new exercise session!", Toast.LENGTH_SHORT).show();
         });
 
         // NOTE: For the Progress Cards and Exercise List, you would typically use
         // a RecyclerView. Since this is complex setup, we are using <include/>
         // tags in the XML for demonstration, and you would replace those with
         // RecyclerView setup code here.
+
     }
 }

@@ -1,15 +1,18 @@
 package com.example.chroniccare;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.cardview.widget.CardView;
-import com.google.android.material.card.MaterialCardView;
+
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,185 +21,177 @@ import java.util.Random;
 
 public class HomeActivity extends BottomNavActivity {
 
-    private TextView currentReadingValue;
-    private TextView lastCheckedTime;
-    private CardView btnCheckNow, btnTakeNow;
-    private AppCompatButton btnTestAlarm;
-    private TextView nextMedicationName, medTiming;
-    private CardView logFoodCard;
+    // Header
+    private TextView mainPageGreeting, mainPageName, mainPageDate;
 
+    // Live data
+    private TextView currentReadingValue, lastCheckedTime;
+
+    // Medication
+    private TextView nextMedicationName, medTiming;
+
+    // Buttons (FIXED TYPES)
+    private AppCompatButton btnCheckNow, btnTakeNow;
+
+    // Quick actions (CardView in XML)
+    private CardView logFoodCard, logExerciseCard, viewReportsCard, contactDoctorCard;
+
+    // Logic
     private Calendar nextMedicationTime;
     private Random random;
+    private GoogleSignInAccount account;
 
-    private static final String NEXT_DUE_MED_ID = "MED_DOC_ID_FOR_DEMO";
-    private static final String NEXT_DUE_MED_NAME = "Empagliflozin 10mg";
+    private static final String NEXT_MED_NAME = "Empagliflozin 10mg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            initializeViews();
-            setupClickListeners();
-            updateBasicUI();
-        } catch (Exception e) {
-            Toast.makeText(this, "Application setup error.", Toast.LENGTH_LONG).show();
-        }
+
+        // ✅ REQUIRED
+        setContentView(R.layout.activity_main);
+
+        initializeViews();
+
+        account = GoogleSignIn.getLastSignedInAccount(this);
+        Log.d("AUTH_DEBUG", "Account null? " + (account == null));
+
+        updateGreeting();
+        updateDate();
+        updateUserName(account);
+        updateInitialReadings();
+        updateNextMedication();
+
+        setupClickListeners();
     }
 
     private void initializeViews() {
+
+        mainPageGreeting = findViewById(R.id.mainPageGreeting);
+        mainPageName = findViewById(R.id.mainPageName);
+        mainPageDate = findViewById(R.id.mainPageDate);
+
         currentReadingValue = findViewById(R.id.currentReadingValue);
         lastCheckedTime = findViewById(R.id.LastCheckedTime);
-        btnCheckNow = findViewById(R.id.btn_checknow);
-        btnTakeNow = findViewById(R.id.btn_takenow);
+
         nextMedicationName = findViewById(R.id.NextMedicationName);
         medTiming = findViewById(R.id.MedTiming);
-        logFoodCard = findViewById(R.id.LogFood);
 
+        // ✅ FIXED
+        btnCheckNow = findViewById(R.id.btn_checknow);
+        btnTakeNow  = findViewById(R.id.btn_takenow);
+
+        logFoodCard = findViewById(R.id.LogFood);
+        logExerciseCard = findViewById(R.id.LogExercise);
+        viewReportsCard = findViewById(R.id.ViewReports);
+        contactDoctorCard = findViewById(R.id.ContactDoctor);
+
+        random = new Random();
 
         nextMedicationTime = Calendar.getInstance();
         nextMedicationTime.add(Calendar.MINUTE, 15);
-        random = new Random();
     }
 
-    private void setupClickListeners() {
-        if (btnCheckNow != null) {
-            btnCheckNow.setOnClickListener(v -> simulateGlucoseCheck());
-        }
-
-        if (btnTakeNow != null) {
-            takeMedication();
-        }
-
-        if (btnTestAlarm != null) {
-            btnTestAlarm.setOnClickListener(v -> triggerAlarmForDueMedication());
-        }
-
-        setupScheduleClicks();
-        setupQuickActions();
-
-        TextView addMedication = findViewById(R.id.AddMediaction);
-        if (addMedication != null) {
-            addMedication.setOnClickListener(v -> {
-                Intent intent = new Intent(HomeActivity.this, AddMedications.class);
-                startActivity(intent);
-            });
-        }
+    private void updateGreeting() {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour < 12) mainPageGreeting.setText("Good Morning,");
+        else if (hour < 17) mainPageGreeting.setText("Good Afternoon,");
+        else mainPageGreeting.setText("Good Evening,");
     }
 
-    private void triggerAlarmForDueMedication() {
-        String DUE_MEDICATION_ID = NEXT_DUE_MED_ID;
-        String DUE_MEDICATION_NAME = NEXT_DUE_MED_NAME;
-        long triggerTime = System.currentTimeMillis() + 5000;
-        AlarmService.scheduleInitialAlarm(this, DUE_MEDICATION_ID, DUE_MEDICATION_NAME, triggerTime);
+    private void updateDate() {
+        String date = new SimpleDateFormat(
+                "EEEE, MMM dd",
+                Locale.getDefault()
+        ).format(Calendar.getInstance().getTime());
+        mainPageDate.setText(date);
     }
 
-    private void takeMedication() {
-        if (btnTakeNow != null) {
-            btnTakeNow.setOnClickListener(v -> {
-                AlarmService.cancelAllReminders(this, NEXT_DUE_MED_ID, NEXT_DUE_MED_NAME);
-                Toast.makeText(this, NEXT_DUE_MED_NAME + " marked as taken (Home Button)", Toast.LENGTH_SHORT).show();
+    private void updateUserName(GoogleSignInAccount account) {
 
-                btnTakeNow.setEnabled(false);
-                btnTakeNow.setAlpha(0.5f);
-                nextMedicationTime = Calendar.getInstance();
-                nextMedicationTime.add(Calendar.HOUR, 4);
-                updateNextMedication();
+        String fullName = "User";
 
-                new android.os.Handler().postDelayed(() -> {
-                    if (btnTakeNow != null) {
-                        btnTakeNow.setEnabled(true);
-                        btnTakeNow.setAlpha(1f);
-                        updateNextMedication();
-                    }
-                }, 5000);
-            });
+        if (account != null) {
+            if (account.getDisplayName() != null)
+                fullName = account.getDisplayName();
+            else if (account.getGivenName() != null)
+                fullName = account.getGivenName();
+            else if (account.getEmail() != null)
+                fullName = account.getEmail();
         }
+
+        String displayName = formatName(fullName);
+        mainPageName.setText(displayName);
+    }
+    private String formatName(String name) {
+
+        if (name == null || name.trim().isEmpty())
+            return "User";
+
+        name = name.trim();
+
+        // If there is no space, return as-is
+        if (!name.contains(" "))
+            return name;
+
+        // Extract first name
+        String firstName = name.substring(0, name.indexOf(" "));
+
+        // If name is longer than first name, add dots
+        return firstName + "...";
     }
 
-    private void simulateGlucoseCheck() {
-        try {
-            int newReading = 80 + random.nextInt(120);
-            updateReadingStatus(newReading);
-            updateLastCheckedTime();
-            Toast.makeText(this, "New reading logged: " + newReading + " mg/dL", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error checking glucose", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    private void updateBasicUI() {
-        updateReadingStatus(128);
+    private void updateInitialReadings() {
+        currentReadingValue.setText("128");
         updateLastCheckedTime();
-        updateNextMedication();
-        updateGreetingAndDate();
-    }
-
-    // --- UI Update Methods (Required but trimmed) ---
-
-    private void updateReadingStatus(int reading) {
-        if (currentReadingValue != null) {
-            currentReadingValue.setText(String.valueOf(reading));
-        }
-        // ... (Status indicator color logic) ...
     }
 
     private void updateLastCheckedTime() {
-        if (lastCheckedTime != null) {
-            String currentTime = new SimpleDateFormat("h:mma", Locale.getDefault()).format(Calendar.getInstance().getTime()).toLowerCase();
-            lastCheckedTime.setText("Last checked at " + currentTime);
-        }
+        String time = new SimpleDateFormat(
+                "h:mma",
+                Locale.getDefault()
+        ).format(Calendar.getInstance().getTime()).toLowerCase();
+        lastCheckedTime.setText("Last checked at " + time);
     }
 
     private void updateNextMedication() {
-        if (nextMedicationName != null) nextMedicationName.setText(NEXT_DUE_MED_NAME);
-        if (medTiming != null) {
-            Calendar now = Calendar.getInstance();
-            long minutes = (nextMedicationTime.getTimeInMillis() - now.getTimeInMillis()) / (60 * 1000);
-
-            String timingText;
-            if (minutes <= 0) {
-                timingText = "Due Now -";
-            } else if (minutes < 60) {
-                timingText = "Due In " + minutes + " Mins -";
-            } else {
-                long hours = minutes / 60;
-                minutes = minutes % 60;
-                timingText = "Due In " + hours + " Hr " + minutes + " Mins -";
-            }
-            medTiming.setText(timingText);
-        }
+        nextMedicationName.setText(NEXT_MED_NAME);
+        long minutes =
+                (nextMedicationTime.getTimeInMillis() - System.currentTimeMillis()) / 60000;
+        medTiming.setText(minutes <= 0
+                ? "Due Now -"
+                : "Due In " + minutes + " Mins -");
     }
 
-    private void updateGreetingAndDate() {
-        // ... (Greeting and Date logic) ...
-    }
+    private void setupClickListeners() {
 
-    private void setupScheduleClicks() {
-        // ... (Schedule click logic) ...
-    }
+        btnCheckNow.setOnClickListener(v -> {
+            int reading = 80 + random.nextInt(120);
+            currentReadingValue.setText(String.valueOf(reading));
+            updateLastCheckedTime();
+            Toast.makeText(this, "Reading logged", Toast.LENGTH_SHORT).show();
+        });
 
-    private void toggleScheduleItem(LinearLayout scheduleItem, int position) {
-        // ... (Toggle logic) ...
-    }
+        btnTakeNow.setOnClickListener(v -> {
+            nextMedicationTime = Calendar.getInstance();
+            nextMedicationTime.add(Calendar.HOUR, 4);
+            updateNextMedication();
+            Toast.makeText(this, "Medication taken", Toast.LENGTH_SHORT).show();
+        });
 
-    private void setupQuickActions() {
-        if (logFoodCard != null) logFoodCard.setOnClickListener(v -> logFood());
-        CardView logExerciseCard = findViewById(R.id.LogExercise);
-        if (logExerciseCard != null) logExerciseCard.setOnClickListener(v -> logExercise());
-        CardView viewReportsCard = findViewById(R.id.ViewReports);
-        if (viewReportsCard != null) viewReportsCard.setOnClickListener(v -> viewReports());
-        CardView contactDoctorCard = findViewById(R.id.ContactDoctor);
-        if (contactDoctorCard != null) contactDoctorCard.setOnClickListener(v -> contactDoctor());
+        logExerciseCard.setOnClickListener(v ->
+                startActivity(new Intent(this, LogExercise.class)));
     }
-
-    private void logFood() { Toast.makeText(this, "Log Food", Toast.LENGTH_SHORT).show(); }
-    private void logExercise() { Toast.makeText(this, "Log Exercise", Toast.LENGTH_SHORT).show(); }
-    private void viewReports() { Toast.makeText(this, "View Reports", Toast.LENGTH_SHORT).show(); }
-    private void contactDoctor() { Toast.makeText(this, "Contact Doctor", Toast.LENGTH_SHORT).show(); }
 
     @Override
-    protected int getLayoutId() { return R.layout.activity_main; }
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
 
     @Override
-    protected int getBottomNavMenuItemId() { return R.id.nav_home; }
+    protected int getBottomNavMenuItemId() {
+        return R.id.nav_home;
+    }
+
+
 }

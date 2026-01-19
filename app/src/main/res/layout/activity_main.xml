@@ -332,6 +332,7 @@
                 android:id="@+id/LogExercise"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="1dp"
                 app:cardBackgroundColor="#f7f7f7">
@@ -339,6 +340,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="true"
                     android:gravity="center">
 
                     <ImageView
