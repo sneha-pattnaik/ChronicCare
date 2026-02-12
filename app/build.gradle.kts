@@ -41,10 +41,10 @@ dependencies {
     implementation(libs.firebase.database)
     implementation("com.google.firebase:firebase-auth:22.1.1")
     implementation("com.google.android.gms:play-services-auth:20.6.0")
-    implementation("com.google.firebase:firebase-firestore:24.7.1")
+    implementation("com.google.firebase:firebase-firestore:26.0.2")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
     // --- ROOM DATABASE ---
     val room_version = "2.8.2"
-    implementation( "com.google.firebase:firebase-firestore:26.0.2")
 
     implementation("androidx.room:room-runtime:$room_version")
 
@@ -63,6 +63,11 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.android.material:material:1.8.0")
+
+    // Retrofit for API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Optional: Room testing utilities
     testImplementation("androidx.room:room-testing:$room_version")

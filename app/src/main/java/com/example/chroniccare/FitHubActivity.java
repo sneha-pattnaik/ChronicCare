@@ -5,15 +5,33 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.chroniccare.utils.ProfileImageHelper;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FitHubActivity extends BottomNavActivity {
+    
+    private CircleImageView profileImage;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        profileImage = findViewById(R.id.profile_image);
+        ProfileImageHelper.loadProfileImage(this, profileImage);
+        profileImage.setOnClickListener(v -> 
+            startActivity(new Intent(this, ProfileActivity.class))
+        );
+        
         findViewById(R.id.webView_gentle_yoga).setOnClickListener(v -> {
             openYouTubeVideo("EvMTrP8eRvM");
         });
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ProfileImageHelper.loadProfileImage(this, profileImage);
     }
     
     private void openYouTubeVideo(String videoId) {

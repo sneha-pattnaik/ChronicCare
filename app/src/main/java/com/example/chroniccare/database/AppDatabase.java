@@ -8,8 +8,8 @@ import androidx.room.RoomDatabase;
 
 // Include all entity classes here
 @Database(
-        entities = {ExerciseLog.class, FoodLog.class},
-        version = 1,
+        entities = {ExerciseLog.class, FoodLog.class, User.class, MedicalDocument.class, ChatMessage.class},
+        version = 4,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -17,6 +17,9 @@ public abstract class AppDatabase extends RoomDatabase {
     // --- DAOs ---
     public abstract ExerciseDao exerciseDao();
     public abstract FoodDao foodDao();
+    public abstract UserDao userDao();
+    public abstract MedicalDocumentDao medicalDocumentDao();
+    public abstract ChatMessageDao chatMessageDao();
 
     // --- Singleton instance ---
     private static volatile AppDatabase INSTANCE;

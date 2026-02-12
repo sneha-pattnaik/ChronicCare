@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
-public abstract class BottomNavActivity extends AppCompatActivity {
+public abstract class BottomNavActivity extends BaseActivity {
 
     BottomNavigationView bottomNavigationView;
 

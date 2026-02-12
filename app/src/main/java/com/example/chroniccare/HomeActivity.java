@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 
+import com.example.chroniccare.utils.ProfileImageHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.Timestamp;
@@ -73,7 +74,7 @@ public class HomeActivity extends BottomNavActivity {
         updateGreeting();
         updateDate();
         updateUserName(account);
-        loadUserPhoto();
+        ProfileImageHelper.loadProfileImage(this, profileImage);
         updateInitialReadings();
         loadNextMedication();
         loadTodaysSchedule();
@@ -87,6 +88,7 @@ public class HomeActivity extends BottomNavActivity {
         super.onResume();
         loadTodaysSchedule();
         loadNextMedication();
+        ProfileImageHelper.loadProfileImage(this, profileImage);
     }
 
     @Override
@@ -102,6 +104,11 @@ public class HomeActivity extends BottomNavActivity {
         mainPageName = findViewById(R.id.mainPageName);
         mainPageDate = findViewById(R.id.mainPageDate);
         profileImage = findViewById(R.id.profile_image);
+        
+        // Set click listener once
+        profileImage.setOnClickListener(v -> 
+            startActivity(new Intent(this, ProfileActivity.class))
+        );
 
         currentReadingValue = findViewById(R.id.currentReadingValue);
         lastCheckedTime = findViewById(R.id.LastCheckedTime);
@@ -158,22 +165,6 @@ public class HomeActivity extends BottomNavActivity {
 
         String displayName = formatName(fullName);
         mainPageName.setText(displayName);
-    }
-    
-    private void loadUserPhoto() {
-        String photoUrl = sharedPreferences.getString("userPhoto", "");
-        
-        if (!photoUrl.isEmpty()) {
-            if (photoUrl.startsWith("http")) {
-                Picasso.get().load(photoUrl).placeholder(R.drawable.ic_profile).into(profileImage);
-            } else {
-                profileImage.setImageURI(Uri.parse(photoUrl));
-            }
-        }
-        
-        profileImage.setOnClickListener(v -> 
-            startActivity(new Intent(this, ProfileActivity.class))
-        );
     }
     
     private String formatName(String name) {

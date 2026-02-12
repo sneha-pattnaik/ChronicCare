@@ -7,13 +7,11 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
-    android:background="#FFFFFF"
-    android:layout_marginTop="20dp">
+    android:background="#FFFFFF">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:layout_margin="10dp"
     android:background="#FFFFFF">
 
     <TextView

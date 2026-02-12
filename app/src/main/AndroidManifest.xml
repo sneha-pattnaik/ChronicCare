@@ -76,6 +76,9 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+        <activity
+            android:name=".DocumentsActivity"
+            android:exported="false" />
 
         <!-- Broadcast Receiver for Alarms -->
         <receiver

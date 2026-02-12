@@ -3,6 +3,7 @@ package com.example.chroniccare;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
+import com.example.chroniccare.utils.ProfileImageHelper;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -39,12 +41,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MonitorActivity extends BottomNavActivity {
 
     private EditText etReadingType, etValueReading, etDateTime, etNotes;
     private Button btnSaveReading;
     private ImageView micIcon, dropdownArrow;
     private Calendar selectedDateTime;
+    private CircleImageView profileImage;
 
     private LineChart chartGlucose;
     private BarChart comparision;
@@ -63,6 +68,12 @@ public class MonitorActivity extends BottomNavActivity {
         setupClickListeners();
         setupCharts();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ProfileImageHelper.loadProfileImage(this, profileImage);
+    }
 
     private void initializeViews() {
         // Find input fields
@@ -71,6 +82,12 @@ public class MonitorActivity extends BottomNavActivity {
         etDateTime = findViewById(R.id.etDateTime);
         btnSaveReading = findViewById(R.id.btnSaveReading);
         micIcon = findViewById(R.id.mic_icon);
+        profileImage = findViewById(R.id.profile_image);
+        
+        ProfileImageHelper.loadProfileImage(this, profileImage);
+        profileImage.setOnClickListener(v -> 
+            startActivity(new Intent(this, ProfileActivity.class))
+        );
 
         // Find dropdown arrow (the ImageView next to reading type)
         LinearLayout readingTypeLayout = (LinearLayout) etReadingType.getParent();
