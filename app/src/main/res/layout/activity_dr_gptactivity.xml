@@ -45,12 +45,83 @@
             app:civ_border_color="#FFFFFF" />
     </LinearLayout>
 
+    <!-- Preset Questions -->
+    <HorizontalScrollView
+        android:id="@+id/presetScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:padding="8dp"
+        android:background="#F9F9F9"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMissedDose"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="💊 Missed a dose"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFeelingDizzy"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="😵 Feeling dizzy"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHighSugar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="📈 High sugar"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLowSugar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="📉 Low sugar"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFeelingTired"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="😴 Feeling tired"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="20dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <!-- Chat Messages -->
     <ScrollView
         android:id="@+id/chatScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header"
+        android:layout_below="@id/presetScrollView"
         android:layout_above="@id/inputLayout"
         android:padding="16dp">
 

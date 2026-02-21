@@ -73,9 +73,7 @@ public class DrGPTActivity extends BottomNavActivity {
         // Load profile image
         if (profileImage != null) {
             ProfileImageHelper.loadProfileImage(this, profileImage);
-            profileImage.setOnClickListener(v -> 
-                startActivity(new Intent(this, ProfileActivity.class))
-            );
+            profileImage.setOnClickListener(v -> ProfileImageHelper.handleProfileClick(this));
         }
         
         // Initialize database
@@ -115,6 +113,32 @@ public class DrGPTActivity extends BottomNavActivity {
         if (btnClearChat != null) {
             btnClearChat.setOnClickListener(v -> showClearChatDialog());
         }
+        
+        // Preset question buttons
+        setupPresetButtons();
+    }
+    
+    private void setupPresetButtons() {
+        findViewById(R.id.btnMissedDose).setOnClickListener(v -> 
+            sendPresetMessage("I missed my medication dose. What should I do?"));
+        
+        findViewById(R.id.btnFeelingDizzy).setOnClickListener(v -> 
+            sendPresetMessage("I'm feeling dizzy. What could be the reason and what should I do?"));
+        
+        findViewById(R.id.btnHighSugar).setOnClickListener(v -> 
+            sendPresetMessage("My blood sugar level is high. What steps should I take?"));
+        
+        findViewById(R.id.btnLowSugar).setOnClickListener(v -> 
+            sendPresetMessage("My blood sugar level is low. What should I do immediately?"));
+        
+        findViewById(R.id.btnFeelingTired).setOnClickListener(v -> 
+            sendPresetMessage("I'm feeling unusually tired. What could be causing this?"));
+    }
+    
+    private void sendPresetMessage(String message) {
+        messageInput.setText(message);
+        sendMessage(message);
+        messageInput.setText("");
     }
     
     @Override

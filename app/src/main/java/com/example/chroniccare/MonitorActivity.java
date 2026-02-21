@@ -85,9 +85,7 @@ public class MonitorActivity extends BottomNavActivity {
         profileImage = findViewById(R.id.profile_image);
         
         ProfileImageHelper.loadProfileImage(this, profileImage);
-        profileImage.setOnClickListener(v -> 
-            startActivity(new Intent(this, ProfileActivity.class))
-        );
+        profileImage.setOnClickListener(v -> ProfileImageHelper.handleProfileClick(this));
 
         // Find dropdown arrow (the ImageView next to reading type)
         LinearLayout readingTypeLayout = (LinearLayout) etReadingType.getParent();

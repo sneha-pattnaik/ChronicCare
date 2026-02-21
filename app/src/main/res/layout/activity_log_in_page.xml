@@ -18,6 +18,18 @@
         android:clickable="true"
         android:focusable="true"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/skiploggin"
+        android:text="skip"
+        android:layout_alignTop="@+id/WelcomePageReturn"
+        android:textSize="16dp"
+        android:textColor="#979494"
+        android:clickable="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:id="@+id/welcometext"

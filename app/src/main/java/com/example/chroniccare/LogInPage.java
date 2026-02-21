@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +21,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 public class LogInPage extends AppCompatActivity {
+    TextView skiploggin;
     LinearLayout btnGoogle;
     GoogleSignInClient gsc;
     SharedPreferences sharedPreferences;
@@ -34,6 +36,8 @@ public class LogInPage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        skiploggin=findViewById(R.id.skiploggin);
+        skiploggin.setOnClickListener(v->skipLogin());
         
         sharedPreferences = getSharedPreferences("ChronicCarePrefs", MODE_PRIVATE);
         
@@ -52,6 +56,11 @@ public class LogInPage extends AppCompatActivity {
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, 1000);
     }
+    private void skipLogin() {
+        Intent skip = new Intent(LogInPage.this, HomeActivity.class);
+        startActivity(skip);
+    }
+
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

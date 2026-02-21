@@ -132,9 +132,7 @@ public class HomeActivity extends BottomNavActivity {
         profileImage = findViewById(R.id.profile_image);
         
         // Set click listener once
-        profileImage.setOnClickListener(v -> 
-            startActivity(new Intent(this, ProfileActivity.class))
-        );
+        profileImage.setOnClickListener(v -> ProfileImageHelper.handleProfileClick(this));
 
         currentReadingValue = findViewById(R.id.currentReadingValue);
         lastCheckedTime = findViewById(R.id.LastCheckedTime);

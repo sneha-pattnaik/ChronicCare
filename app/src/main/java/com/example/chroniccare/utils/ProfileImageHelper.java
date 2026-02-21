@@ -1,10 +1,13 @@
 package com.example.chroniccare.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.chroniccare.LogInPage;
+import com.example.chroniccare.ProfileActivity;
 import com.example.chroniccare.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -51,5 +54,18 @@ public class ProfileImageHelper {
         } else {
             imageView.setImageResource(R.drawable.ic_profile);
         }
+    }
+    
+    public static void handleProfileClick(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("ChronicCarePrefs", Context.MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        
+        Intent intent;
+        if (isLoggedIn) {
+            intent = new Intent(context, ProfileActivity.class);
+        } else {
+            intent = new Intent(context, LogInPage.class);
+        }
+        context.startActivity(intent);
     }
 }

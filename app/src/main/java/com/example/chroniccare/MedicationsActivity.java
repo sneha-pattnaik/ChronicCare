@@ -18,9 +18,7 @@ public class MedicationsActivity extends BottomNavActivity {
         
         profileImage = findViewById(R.id.profile_image);
         ProfileImageHelper.loadProfileImage(this, profileImage);
-        profileImage.setOnClickListener(v -> 
-            startActivity(new Intent(this, ProfileActivity.class))
-        );
+        profileImage.setOnClickListener(v -> ProfileImageHelper.handleProfileClick(this));
         
         TextView addButton = findViewById(R.id.MedPg_add);
         if (addButton != null) {
