@@ -146,7 +146,7 @@ public class HomeActivity extends BottomNavActivity {
 
         btnCheckNow = findViewById(R.id.btn_checknow);
         btnTakeNow  = findViewById(R.id.btn_takenow);
-        btnStopAlarm = findViewById(R.id.btn_stop_alarm);
+        // btnStopAlarm = findViewById(R.id.btn_stop_alarm);
 
         logFoodCard = findViewById(R.id.LogFood);
         logExerciseCard = findViewById(R.id.LogExercise);
@@ -349,9 +349,9 @@ public class HomeActivity extends BottomNavActivity {
             Toast.makeText(this, "Mark medications from schedule below", Toast.LENGTH_SHORT).show();
         });
         
-        btnStopAlarm.setOnClickListener(v -> {
-            stopAllAlarms();
-        });
+//        btnStopAlarm.setOnClickListener(v -> {
+//            stopAllAlarms();
+//        });
 
         logExerciseCard.setOnClickListener(v ->
                 startActivity(new Intent(this, LogExercise.class)));
