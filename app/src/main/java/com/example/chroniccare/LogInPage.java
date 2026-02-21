@@ -40,6 +40,7 @@ public class LogInPage extends AppCompatActivity {
         btnGoogle = findViewById(R.id.btnGoogle);
         
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         gsc = GoogleSignIn.getClient(this, gso);
@@ -67,7 +68,8 @@ public class LogInPage extends AppCompatActivity {
                     finish();
                 }
             } catch (ApiException e) {
-                Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sign-in failed: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
+                android.util.Log.e("GoogleSignIn", "Error code: " + e.getStatusCode() + ", Message: " + e.getMessage());
             }
         }
     }
