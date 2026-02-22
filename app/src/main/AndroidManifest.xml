@@ -65,6 +65,12 @@
             android:name=".FitHubActivity"
             android:exported="false" />
         <activity
+            android:name=".ReportsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportInsightsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MedicationsActivity"
             android:exported="false" />
         <activity

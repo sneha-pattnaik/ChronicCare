@@ -357,6 +357,9 @@ public class HomeActivity extends BottomNavActivity {
         logExerciseCard.setOnClickListener(v ->
                 startActivity(new Intent(this, LogExercise.class)));
 
+        viewReportsCard.setOnClickListener(v ->
+                startActivity(new Intent(this, ReportsActivity.class)));
+
         findViewById(R.id.AddMediaction).setOnClickListener(v ->
                 startActivity(new Intent(this, AddMedications.class)));
     }

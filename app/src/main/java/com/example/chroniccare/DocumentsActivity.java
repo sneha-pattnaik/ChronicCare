@@ -19,6 +19,7 @@ import com.example.chroniccare.database.AppDatabase;
 import com.example.chroniccare.database.MedicalDocument;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -137,6 +138,7 @@ public class DocumentsActivity extends BaseActivity {
         TextView tvDate = cardView.findViewById(R.id.tvDocDate);
         TextView tvSize = cardView.findViewById(R.id.tvDocSize);
         ImageView btnDelete = cardView.findViewById(R.id.btnDeleteDoc);
+        ImageView btnAiInsights = cardView.findViewById(R.id.btnAiInsights);
 
         tvName.setText(doc.documentName);
         tvType.setText(doc.documentType);
@@ -171,8 +173,41 @@ public class DocumentsActivity extends BaseActivity {
 
         cardView.setOnClickListener(v -> openDocument(doc.documentUri));
         btnDelete.setOnClickListener(v -> confirmDelete(doc));
+        if (btnAiInsights != null) {
+            btnAiInsights.setOnClickListener(v -> openReportInsights(doc));
+        }
 
         documentsContainer.addView(cardView);
+    }
+
+    private void openReportInsights(MedicalDocument doc) {
+        if (doc == null || doc.documentUri == null || doc.documentUri.isEmpty()) {
+            Toast.makeText(this, "Report URL unavailable", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseFirestore.getInstance()
+            .collection("users").document(currentUserId)
+            .collection("documents")
+            .whereEqualTo("downloadUrl", doc.documentUri)
+            .limit(1)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                if (querySnapshot.isEmpty()) {
+                    Toast.makeText(this, "Report not found in cloud", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                com.google.firebase.firestore.DocumentSnapshot snapshot = querySnapshot.getDocuments().get(0);
+                Intent intent = new Intent(this, ReportInsightsActivity.class);
+                intent.putExtra("documentId", snapshot.getId());
+                intent.putExtra("documentName", doc.documentName);
+                intent.putExtra("documentUrl", doc.documentUri);
+                intent.putExtra("documentType", doc.documentType);
+                startActivity(intent);
+            })
+            .addOnFailureListener(e ->
+                Toast.makeText(this, "Unable to load report", Toast.LENGTH_SHORT).show()
+            );
     }
 
     private void openDocument(String uriString) {

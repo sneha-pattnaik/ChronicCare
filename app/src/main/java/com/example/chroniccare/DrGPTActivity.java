@@ -21,7 +21,11 @@ import com.example.chroniccare.api.ChatHistoryResponse;
 import com.example.chroniccare.api.StatusResponse;
 import com.example.chroniccare.api.DrGPTApiService;
 import com.example.chroniccare.api.RetrofitClient;
+import com.example.chroniccare.database.User;
 import com.example.chroniccare.utils.ProfileImageHelper;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 import java.util.UUID;
@@ -175,9 +179,54 @@ public class DrGPTActivity extends BottomNavActivity {
         addUserMessage(message);
         saveMessageToDb("user", message);
         showLoading(true);
-        
-        ChatRequest request = new ChatRequest(sessionId, message);
-        
+
+        sendMessageWithMedicalContext(message);
+    }
+
+    private void sendMessageWithMedicalContext(String message) {
+        if (userId == null || userId.isEmpty()) {
+            sendMessageToApi(message);
+            return;
+        }
+
+        try {
+            com.google.firebase.firestore.DocumentReference personalRef = firebaseDb
+                    .collection("users").document(userId)
+                    .collection("profile").document("personalInfo");
+            com.google.firebase.firestore.DocumentReference medicalRef = firebaseDb
+                    .collection("users").document(userId)
+                    .collection("profile").document("medicalInfo");
+            com.google.firebase.firestore.DocumentReference emergencyRef = firebaseDb
+                    .collection("users").document(userId)
+                    .collection("profile").document("emergencyContact");
+            com.google.firebase.firestore.CollectionReference medsRef = firebaseDb
+                    .collection("users").document(userId)
+                    .collection("medications");
+
+            Tasks.whenAllSuccess(personalRef.get(), medicalRef.get(), emergencyRef.get(), medsRef.get())
+                    .addOnSuccessListener(results -> {
+                        DocumentSnapshot personalDoc = (DocumentSnapshot) results.get(0);
+                        DocumentSnapshot medicalDoc = (DocumentSnapshot) results.get(1);
+                        DocumentSnapshot emergencyDoc = (DocumentSnapshot) results.get(2);
+                        QuerySnapshot medsSnapshot = (QuerySnapshot) results.get(3);
+                        User localUser = db.userDao().getUserByUserId(userId);
+                        String context = buildUserContext(personalDoc, medicalDoc, emergencyDoc, localUser, medsSnapshot);
+                        sendMessageToApi(buildMessageWithContext(message, context));
+                    })
+                    .addOnFailureListener(e -> {
+                        User localUser = db.userDao().getUserByUserId(userId);
+                        String context = buildUserContext(null, null, null, localUser, null);
+                        sendMessageToApi(buildMessageWithContext(message, context));
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load medical context", e);
+            sendMessageToApi(message);
+        }
+    }
+
+    private void sendMessageToApi(String payload) {
+        ChatRequest request = new ChatRequest(sessionId, payload);
+
         apiService.sendMessage(request).enqueue(new Callback<ChatResponse>() {
             @Override
             public void onResponse(Call<ChatResponse> call, Response<ChatResponse> response) {
@@ -203,6 +252,132 @@ public class DrGPTActivity extends BottomNavActivity {
                 Log.e(TAG, "API Failure: " + t.getMessage(), t);
             }
         });
+    }
+
+    private String buildMessageWithContext(String message, String context) {
+        if (context == null || context.isEmpty()) {
+            return message;
+        }
+        return "User profile summary:\n" + context + "\n\nUser question:\n" + message;
+    }
+
+    private String buildUserContext(
+            DocumentSnapshot personalDoc,
+            DocumentSnapshot medicalDoc,
+            DocumentSnapshot emergencyDoc,
+            User localUser,
+            QuerySnapshot medsSnapshot
+    ) {
+        String name = getValue(personalDoc, "name", localUser != null ? localUser.name : null);
+        String email = getValue(personalDoc, "email", localUser != null ? localUser.email : null);
+        String phone = getValue(personalDoc, "phone", localUser != null ? localUser.phone : null);
+        String dob = getValue(personalDoc, "dob", localUser != null ? localUser.dob : null);
+        String gender = getValue(personalDoc, "gender", localUser != null ? localUser.gender : null);
+        String bloodGroup = getValue(personalDoc, "bloodGroup", localUser != null ? localUser.bloodGroup : null);
+        String height = getValue(medicalDoc, "height", localUser != null ? localUser.height : null);
+        String weight = getValue(medicalDoc, "weight", localUser != null ? localUser.weight : null);
+        String conditions = getValue(medicalDoc, "conditions", localUser != null ? localUser.conditions : null);
+        String allergies = getValue(medicalDoc, "allergies", localUser != null ? localUser.allergies : null);
+        String emergencyName = getValue(emergencyDoc, "name", localUser != null ? localUser.emergencyName : null);
+        String emergencyPhone = getValue(emergencyDoc, "phone", localUser != null ? localUser.emergencyPhone : null);
+        String emergencyRelation = getValue(emergencyDoc, "relation", localUser != null ? localUser.emergencyRelation : null);
+
+        StringBuilder builder = new StringBuilder();
+        appendSection(builder, "Personal");
+        appendContextLine(builder, "Name", name);
+        appendContextLine(builder, "Email", email);
+        appendContextLine(builder, "Phone", phone);
+        appendContextLine(builder, "DOB", dob);
+        appendContextLine(builder, "Gender", gender);
+        appendContextLine(builder, "Blood Group", bloodGroup);
+
+        appendSection(builder, "Medical");
+        appendContextLine(builder, "Height", height);
+        appendContextLine(builder, "Weight", weight);
+        appendContextLine(builder, "Conditions", conditions);
+        appendContextLine(builder, "Allergies", allergies);
+
+        appendSection(builder, "Emergency Contact");
+        appendContextLine(builder, "Name", emergencyName);
+        appendContextLine(builder, "Phone", emergencyPhone);
+        appendContextLine(builder, "Relation", emergencyRelation);
+
+        appendSection(builder, "Medications");
+        String medicationSummary = buildMedicationSummary(medsSnapshot);
+        if (medicationSummary == null || medicationSummary.isEmpty()) {
+            appendContextLine(builder, "Current", "No medications found");
+        } else {
+            builder.append(medicationSummary);
+        }
+
+        return builder.toString().trim();
+    }
+
+    private String getValue(DocumentSnapshot doc, String key, String fallback) {
+        String value = doc != null ? doc.getString(key) : null;
+        if (value == null || value.trim().isEmpty()) {
+            return fallback;
+        }
+        return value;
+    }
+
+    private void appendContextLine(StringBuilder builder, String label, String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return;
+        }
+        if (builder.length() > 0) {
+            builder.append("\n");
+        }
+        builder.append(label).append(": ").append(value.trim());
+    }
+
+    private void appendSection(StringBuilder builder, String title) {
+        if (builder.length() > 0) {
+            builder.append("\n\n");
+        }
+        builder.append(title).append(":");
+    }
+
+    private String buildMedicationSummary(QuerySnapshot medsSnapshot) {
+        if (medsSnapshot == null || medsSnapshot.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        int index = 1;
+        for (DocumentSnapshot doc : medsSnapshot.getDocuments()) {
+            String name = doc.getString("name");
+            String time = doc.getString("time");
+            String mealTime = doc.getString("mealTime");
+            String period = doc.getString("period");
+            Boolean taken = doc.getBoolean("taken");
+
+            if (name == null || name.trim().isEmpty()) {
+                continue;
+            }
+
+            builder.append("\n")
+                    .append(index++)
+                    .append(". ")
+                    .append(name.trim());
+
+            if (time != null && !time.trim().isEmpty()) {
+                builder.append(" at ").append(time.trim());
+            }
+
+            if (period != null && !period.trim().isEmpty()) {
+                builder.append(" (").append(period.trim()).append(")");
+            }
+
+            if (mealTime != null && !mealTime.trim().isEmpty()) {
+                builder.append(" ").append(mealTime.trim());
+            }
+
+            builder.append(" - ");
+            builder.append(Boolean.TRUE.equals(taken) ? "Taken" : "Pending");
+        }
+
+        return builder.toString().trim();
     }
 
     private void addUserMessage(String message) {
