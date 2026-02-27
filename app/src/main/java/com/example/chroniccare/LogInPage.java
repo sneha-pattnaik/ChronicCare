@@ -3,6 +3,8 @@ package com.example.chroniccare;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +32,10 @@ import java.util.Locale;
 public class LogInPage extends AppCompatActivity {
     TextView skiploggin;
     TextView signupLink;
+    MaterialButton btnGoogle, btnInstagram;
+    EditText etUsername;
+    EditText etPassword;
+    MaterialButton btnLogin;
     LinearLayout btnGoogle;
     EditText etUsername;
     EditText etPassword;
@@ -43,13 +50,20 @@ public class LogInPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_log_in_page);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        skiploggin=findViewById(R.id.skiploggin);
-        skiploggin.setOnClickListener(v->skipLogin());
+        
+        View mainView = findViewById(R.id.main);
+        if (mainView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        }
+        
+        skiploggin = findViewById(R.id.skiploggin);
+        if (skiploggin != null) {
+            skiploggin.setOnClickListener(v -> skipLogin());
+        }
         
         sharedPreferences = getSharedPreferences("ChronicCarePrefs", MODE_PRIVATE);
 
@@ -62,6 +76,7 @@ public class LogInPage extends AppCompatActivity {
         signupLink = findViewById(R.id.signupLink);
 
         btnGoogle = findViewById(R.id.btnGoogle);
+        btnInstagram = findViewById(R.id.btnInstagram);
         
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -69,6 +84,22 @@ public class LogInPage extends AppCompatActivity {
                 .build();
         gsc = GoogleSignIn.getClient(this, gso);
         
+        if (btnGoogle != null) {
+            btnGoogle.setOnClickListener(v -> signIn());
+        }
+        
+        if (btnLogin != null) {
+            btnLogin.setOnClickListener(v -> signInWithUsername());
+        }
+        
+        if (signupLink != null) {
+            signupLink.setOnClickListener(v -> startActivity(new Intent(LogInPage.this, SignUpActivity.class)));
+        }
+
+        View returnBtn = findViewById(R.id.WelcomePageReturn);
+        if (returnBtn != null) {
+            returnBtn.setOnClickListener(v -> finish());
+        }
         btnGoogle.setOnClickListener(v -> signIn());
         btnLogin.setOnClickListener(v -> signInWithUsername());
         signupLink.setOnClickListener(v -> startActivity(new Intent(LogInPage.this, SignUpActivity.class)));
@@ -78,12 +109,17 @@ public class LogInPage extends AppCompatActivity {
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, 1000);
     }
+    
     private void skipLogin() {
         Intent skip = new Intent(LogInPage.this, HomeActivity.class);
         startActivity(skip);
     }
 
     private void signInWithUsername() {
+        if (etUsername == null || etPassword == null) return;
+
+        String usernameInput = etUsername.getText().toString().trim();
+        String passwordInput = etPassword.getText().toString().trim();
         String usernameInput = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String passwordInput = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 
