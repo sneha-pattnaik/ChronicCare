@@ -156,7 +156,7 @@ public class HomeActivity extends BottomNavActivity {
 
         btnCheckNow = findViewById(R.id.btn_checknow);
         btnTakeNow  = findViewById(R.id.btn_takenow);
-        btnDelete = findViewById(R.id.btnDelete);
+        btnDelete = findViewById(R.id.btnDeleteDoc);
 
         logFoodCard = findViewById(R.id.LogFood);
         logExerciseCard = findViewById(R.id.LogExercise);
@@ -172,9 +172,9 @@ public class HomeActivity extends BottomNavActivity {
 
     private void updateGreeting() {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour < 12) mainPageGreeting.setText("Good Morning,");
-        else if (hour < 17) mainPageGreeting.setText("Good Afternoon,");
-        else mainPageGreeting.setText("Good Evening,");
+        if (hour < 12) mainPageGreeting.setText(getString(R.string.home_greeting_morning));
+        else if (hour < 17) mainPageGreeting.setText(getString(R.string.home_greeting_afternoon));
+        else mainPageGreeting.setText(getString(R.string.home_greeting_evening));
     }
 
     private void updateDate() {
@@ -273,7 +273,7 @@ public class HomeActivity extends BottomNavActivity {
         });
 
         btnTakeNow.setOnClickListener(v -> Toast.makeText(this, "Mark medications from schedule below", Toast.LENGTH_SHORT).show());
-        btnDelete.setOnClickListener(v -> confirmDeletion());
+        if (btnDelete != null) btnDelete.setOnClickListener(v -> confirmDeletion());
 
         logFoodCard.setOnClickListener(v -> startActivity(new Intent(this, LogFood.class)));
         logExerciseCard.setOnClickListener(v -> startActivity(new Intent(this, LogExercise.class)));
@@ -339,7 +339,7 @@ public class HomeActivity extends BottomNavActivity {
                     if (which == 0) {
                         isInDeleteMode = true;
                         selectedMedIds.clear();
-                        btnDelete.setVisibility(View.VISIBLE);
+                        if (btnDelete != null) btnDelete.setVisibility(View.VISIBLE);
                         loadTodaysSchedule(); // Refresh to show checkboxes
                     }
                 }).show();
@@ -371,7 +371,7 @@ public class HomeActivity extends BottomNavActivity {
         }
         
         isInDeleteMode = false;
-        btnDelete.setVisibility(View.GONE);
+        if (btnDelete != null) btnDelete.setVisibility(View.GONE);
         selectedMedIds.clear();
         Toast.makeText(this, "Medications deleted", Toast.LENGTH_SHORT).show();
     }

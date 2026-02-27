@@ -40,10 +40,10 @@ public class LogInPage extends AppCompatActivity {
     EditText etUsername;
     EditText etPassword;
     MaterialButton btnLogin;
-    LinearLayout btnGoogle;
-    EditText etUsername;
-    EditText etPassword;
-    TextView btnLogin;
+
+
+
+
     GoogleSignInClient gsc;
     SharedPreferences sharedPreferences;
     FirebaseAuth firebaseAuth;
@@ -81,7 +81,6 @@ public class LogInPage extends AppCompatActivity {
         etPassword = findViewById(R.id.etpassword);
         btnLogin = findViewById(R.id.btnLogin);
         signupLink = findViewById(R.id.signupLink);
-        langSelector = findViewById(R.id.langSelector);
 
         btnGoogle = findViewById(R.id.btnGoogle);
         btnInstagram = findViewById(R.id.btnInstagram);
@@ -155,8 +154,7 @@ public class LogInPage extends AppCompatActivity {
     private void signInWithUsername() {
         if (etUsername == null || etPassword == null) return;
 
-        String usernameInput = etUsername.getText().toString().trim();
-        String passwordInput = etPassword.getText().toString().trim();
+
         String usernameInput = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String passwordInput = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 

@@ -331,6 +331,32 @@
     <string name="common_success">Success</string>
     <string name="common_failed">Failed</string>
 
+    <!-- Additional Home Strings -->
+    <string name="home_default_reading_value">128</string>
+    <string name="home_last_checked_prefix">Last checked at </string>
+    <string name="home_reading_logged">Reading logged</string>
+    <string name="home_mark_medications_prompt">Mark medications from schedule below</string>
+    <string name="home_no_medications_selected">No medications selected</string>
+    <string name="home_medications_deleted">Medications deleted</string>
+
+    <!-- Additional AddMedications Strings -->
+    <string name="add_med_failed_load_image">Failed to load image</string>
+    <string name="add_med_please_login">Please login first</string>
+    <string name="add_med_please_fill_fields">Please fill all fields</string>
+    <string name="add_med_select_one_time">Select at least one time</string>
+
+    <!-- Additional Monitor Strings -->
+    <string name="monitor_voice_coming_soon">Voice input feature coming soon!</string>
+    <string name="monitor_please_select_type">Please select reading type</string>
+    <string name="monitor_please_enter_unit">Please enter %1$s</string>
+    <string name="monitor_please_select_datetime">Please select date and time</string>
+
+    <!-- Additional Strings -->
+    <string name="error_generic">Error: %1$s</string>
+    <string name="unable_to_open_link">Unable to open link</string>
+    <string name="daily_workout_series">Daily Workout Series</string>
+    <string name="playlist">Playlist</string>
+
     <string-array name="frequency_options">
         <item>Daily</item>
         <item>Twice Daily</item>
@@ -406,4 +432,19 @@
         <item>O+</item>
         <item>O-</item>
     </string-array>
+
+    <!-- Language Selection -->
+    <string name="select_language">Select Your Language</string>
+    <string name="select_language_subtitle">Choose your preferred language for the app</string>
+    <string name="language_english">English</string>
+    <string name="language_hindi">हिंदी (Hindi)</string>
+    <string name="language_bengali">বাংলা (Bengali)</string>
+    <string name="language_odia">ଓଡ଼ିଆ (Odia)</string>
+    <string name="language_tamil">தமிழ் (Tamil)</string>
+    <string name="language_telugu">తెలుగు (Telugu)</string>
+    <string name="language_kannada">ಕನ್ನಡ (Kannada)</string>
+    <string name="language_malayalam">മലയാളം (Malayalam)</string>
+    <string name="continue_button">Continue</string>
+    <string name="profile_change_language">Change Language</string>
+    <string name="profile_language_changed_toast">Language changed. Restart app to apply.</string>
 </resources>

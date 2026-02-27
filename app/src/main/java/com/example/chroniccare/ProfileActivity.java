@@ -47,7 +47,7 @@ public class ProfileActivity extends BaseActivity {
     private TextInputEditText etPhone, etDOB, etHeight, etWeight, etConditions, etAllergies;
     private TextInputEditText etEmergencyName, etEmergencyPhone, etEmergencyRelation;
     private AutoCompleteTextView spinnerGender, spinnerBloodGroup;
-    private MaterialButton btnSaveProfile, btnLogout, btnUploadDocument, btnViewDocuments;
+    private MaterialButton btnSaveProfile, btnLogout, btnUploadDocument, btnViewDocuments, btnChangeLanguage;
     private ImageView btnSharePersonal, btnShareMedical, btnShareEmergency;
     private MaterialToolbar toolbar;
     private SharedPreferences sharedPreferences;
@@ -63,35 +63,35 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         sharedPreferences = getSharedPreferences("ChronicCarePrefs", MODE_PRIVATE);
         currentUserId = sharedPreferences.getString("userId", "");
-        
+
         if (currentUserId == null || currentUserId.isEmpty()) {
             startActivity(new Intent(this, LogInPage.class));
             finish();
             return;
         }
-        
+
         setContentView(R.layout.activity_profile);
-        
+
         executorService = java.util.concurrent.Executors.newSingleThreadExecutor();
         db = AppDatabase.getInstance(this);
         firebaseSync = new com.example.chroniccare.utils.FirebaseSync(currentUserId);
-        
+
         initializeViews();
         setupToolbar();
         setupDropdowns();
         setupListeners();
-        
+
         // Load local data first, then sync from cloud
         loadUserData();
         syncProfileFromCloud();
     }
-    
+
     private void syncProfileFromCloud() {
         com.google.firebase.firestore.FirebaseFirestore firestore = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
+
         // Sync personal info from Firebase to local DB
         firestore.collection("users").document(currentUserId)
             .collection("profile").document("personalInfo")
@@ -99,7 +99,7 @@ public class ProfileActivity extends BaseActivity {
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
                     Log.d("ProfileActivity", "✅ Synced personal info from cloud");
-                    
+
                     // Save to local database
                     executorService.execute(() -> {
                         User user = db.userDao().getUserByUserId(currentUserId);
@@ -107,16 +107,16 @@ public class ProfileActivity extends BaseActivity {
                             user = new User();
                             user.userId = currentUserId;
                         }
-                        
+
                         user.name = doc.getString("name");
                         user.email = doc.getString("email");
                         user.phone = doc.getString("phone");
                         user.dob = doc.getString("dob");
                         user.gender = doc.getString("gender");
                         user.bloodGroup = doc.getString("bloodGroup");
-                        
+
                         db.userDao().insert(user);
-                        
+
                         // Now sync medical info
                         syncMedicalInfoFromCloud();
                     });
@@ -129,31 +129,31 @@ public class ProfileActivity extends BaseActivity {
                 Log.e("ProfileActivity", "Failed to sync personal info from cloud", e);
             });
     }
-    
+
     private void syncMedicalInfoFromCloud() {
         com.google.firebase.firestore.FirebaseFirestore firestore = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
+
         firestore.collection("users").document(currentUserId)
             .collection("profile").document("medicalInfo")
             .get()
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
                     Log.d("ProfileActivity", "✅ Synced medical info from cloud");
-                    
+
                     executorService.execute(() -> {
                         User user = db.userDao().getUserByUserId(currentUserId);
                         if (user == null) {
                             user = new User();
                             user.userId = currentUserId;
                         }
-                        
+
                         user.height = doc.getString("height");
                         user.weight = doc.getString("weight");
                         user.conditions = doc.getString("conditions");
                         user.allergies = doc.getString("allergies");
-                        
+
                         db.userDao().insert(user);
-                        
+
                         // Now sync emergency contact
                         syncEmergencyContactFromCloud();
                     });
@@ -166,30 +166,30 @@ public class ProfileActivity extends BaseActivity {
                 Log.e("ProfileActivity", "Failed to sync medical info from cloud", e);
             });
     }
-    
+
     private void syncEmergencyContactFromCloud() {
         com.google.firebase.firestore.FirebaseFirestore firestore = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        
+
         firestore.collection("users").document(currentUserId)
             .collection("profile").document("emergencyContact")
             .get()
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
                     Log.d("ProfileActivity", "✅ Synced emergency contact from cloud");
-                    
+
                     executorService.execute(() -> {
                         User user = db.userDao().getUserByUserId(currentUserId);
                         if (user == null) {
                             user = new User();
                             user.userId = currentUserId;
                         }
-                        
+
                         user.emergencyName = doc.getString("name");
                         user.emergencyPhone = doc.getString("phone");
                         user.emergencyRelation = doc.getString("relation");
-                        
+
                         db.userDao().insert(user);
-                        
+
                         // Reload UI after all syncs complete
                         runOnUiThread(() -> loadUserData());
                     });
@@ -223,12 +223,17 @@ public class ProfileActivity extends BaseActivity {
         btnChangePhoto = findViewById(R.id.btnChangePhoto);
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnLogout = findViewById(R.id.btnLogout);
+        btnChangeLanguage = findViewById(R.id.btnChangeLanguage);
         btnUploadDocument = findViewById(R.id.btnUploadDocument);
         btnViewDocuments = findViewById(R.id.btnViewDocuments);
         btnSharePersonal = findViewById(R.id.btnSharePersonal);
         btnShareMedical = findViewById(R.id.btnShareMedical);
         btnShareEmergency = findViewById(R.id.btnShareEmergency);
-        
+
+        if (btnChangeLanguage == null) {
+            android.util.Log.e("ProfileActivity", "btnChangeLanguage is null!");
+        }
+
         loadConsistencyGrid();
     }
 
@@ -285,13 +290,16 @@ public class ProfileActivity extends BaseActivity {
 
         btnUploadDocument.setOnClickListener(v -> showUploadBottomSheet());
 
-        btnViewDocuments.setOnClickListener(v -> 
+        btnViewDocuments.setOnClickListener(v ->
             startActivity(new Intent(this, DocumentsActivity.class))
         );
 
         etDOB.setOnClickListener(v -> showDatePicker());
         btnSaveProfile.setOnClickListener(v -> saveProfile());
         btnLogout.setOnClickListener(v -> logout());
+        if (btnChangeLanguage != null) {
+            btnChangeLanguage.setOnClickListener(v -> showLanguageDialog());
+        }
         btnSharePersonal.setOnClickListener(v -> sharePersonalInfo());
         btnShareMedical.setOnClickListener(v -> shareMedicalInfo());
         btnShareEmergency.setOnClickListener(v -> shareEmergencyInfo());
@@ -311,7 +319,7 @@ public class ProfileActivity extends BaseActivity {
                 try {
                     Log.d("ProfileActivity", "Loading user data for userId: " + currentUserId);
                     User user = db.userDao().getUserByUserId(currentUserId);
-                    
+
                     if (user != null) {
                         Log.d("ProfileActivity", "User found in DB: " + user.name);
                         Log.d("ProfileActivity", "Conditions: " + user.conditions);
@@ -320,13 +328,13 @@ public class ProfileActivity extends BaseActivity {
                     } else {
                         Log.d("ProfileActivity", "User NOT found in DB");
                     }
-                    
+
                     runOnUiThread(() -> {
                         if (user != null) {
                             // Load from database
                             tvName.setText(user.name != null ? user.name : getString(R.string.profile_default_user_name));
                             tvEmail.setText(user.email != null ? user.email : "");
-                            
+
                             if (etPhone != null) etPhone.setText(user.phone != null ? user.phone : "");
                             if (etDOB != null) etDOB.setText(user.dob != null ? user.dob : "");
                             if (etHeight != null) etHeight.setText(user.height != null ? user.height : "");
@@ -336,12 +344,12 @@ public class ProfileActivity extends BaseActivity {
                             if (etEmergencyName != null) etEmergencyName.setText(user.emergencyName != null ? user.emergencyName : "");
                             if (etEmergencyPhone != null) etEmergencyPhone.setText(user.emergencyPhone != null ? user.emergencyPhone : "");
                             if (etEmergencyRelation != null) etEmergencyRelation.setText(user.emergencyRelation != null ? user.emergencyRelation : "");
-                            
-                            if (user.gender != null && !user.gender.isEmpty() && spinnerGender != null) 
+
+                            if (user.gender != null && !user.gender.isEmpty() && spinnerGender != null)
                                 spinnerGender.setText(user.gender, false);
-                            if (user.bloodGroup != null && !user.bloodGroup.isEmpty() && spinnerBloodGroup != null) 
+                            if (user.bloodGroup != null && !user.bloodGroup.isEmpty() && spinnerBloodGroup != null)
                                 spinnerBloodGroup.setText(user.bloodGroup, false);
-                                
+
                             Log.d("ProfileActivity", "UI updated with user data");
                         } else {
                             // Load from SharedPreferences (first time)
@@ -389,11 +397,11 @@ public class ProfileActivity extends BaseActivity {
                 }
             });
         }
-        
+
         // Sync to Firebase with proper structure
         try {
             Log.d("ProfileActivity", "Preparing to sync profile to Firebase...");
-            
+
             // Personal Info
             java.util.HashMap<String, Object> personalInfo = new java.util.HashMap<>();
             personalInfo.put("name", user.name);
@@ -402,20 +410,20 @@ public class ProfileActivity extends BaseActivity {
             personalInfo.put("dob", user.dob);
             personalInfo.put("gender", user.gender);
             personalInfo.put("bloodGroup", user.bloodGroup);
-            
+
             // Medical Info
             java.util.HashMap<String, Object> medicalInfo = new java.util.HashMap<>();
             medicalInfo.put("height", user.height);
             medicalInfo.put("weight", user.weight);
             medicalInfo.put("conditions", user.conditions);
             medicalInfo.put("allergies", user.allergies);
-            
+
             // Emergency Contact
             java.util.HashMap<String, Object> emergencyContact = new java.util.HashMap<>();
             emergencyContact.put("name", user.emergencyName);
             emergencyContact.put("phone", user.emergencyPhone);
             emergencyContact.put("relation", user.emergencyRelation);
-            
+
             if (firebaseSync != null) {
                 firebaseSync.syncPersonalInfo(personalInfo);
                 firebaseSync.syncMedicalInfo(medicalInfo);
@@ -442,6 +450,45 @@ public class ProfileActivity extends BaseActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    private void showLanguageDialog() {
+        String[] languages = {
+            getString(R.string.language_english),
+            getString(R.string.language_hindi),
+            getString(R.string.language_bengali),
+            getString(R.string.language_odia),
+            getString(R.string.language_tamil),
+            getString(R.string.language_telugu),
+            getString(R.string.language_kannada),
+            getString(R.string.language_malayalam)
+        };
+        String[] languageCodes = {"en", "hi", "bn", "or", "ta", "te", "kn", "ml"};
+        
+        String currentLang = com.example.chroniccare.utils.LocaleHelper.getPersistedLanguage(this);
+        int selectedIndex = 0;
+        for (int i = 0; i < languageCodes.length; i++) {
+            if (languageCodes[i].equals(currentLang)) {
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.profile_change_language))
+            .setSingleChoiceItems(languages, selectedIndex, (dialog, which) -> {
+                String selectedLanguage = languageCodes[which];
+                com.example.chroniccare.utils.LocaleHelper.setLocale(this, selectedLanguage);
+                Toast.makeText(this, getString(R.string.profile_language_changed_toast), Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+                
+                // Restart activity instead of recreate to avoid crash
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            })
+            .setNegativeButton(getString(R.string.common_cancel), null)
+            .show();
     }
 
     private void sharePersonalInfo() {
@@ -574,32 +621,32 @@ public class ProfileActivity extends BaseActivity {
     private void uploadDocument(Uri uri, String docType, String docName) {
         try {
             Log.d("ProfileActivity", "Starting upload for URI: " + uri.toString());
-            
+
             String extension = getFileExtension(getFileName(uri));
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             String storedFileName = currentUserId + "_" + timestamp + extension;
             long fileSize = getFileSize(uri);
-            
+
             Log.d("ProfileActivity", "File name: " + storedFileName);
             Log.d("ProfileActivity", "File size: " + fileSize);
-            
+
             // Show progress
             android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(this);
             progressDialog.setMessage(getString(R.string.profile_uploading_to_cloud));
             progressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setMax(100);
             progressDialog.show();
-            
+
             // Upload to Firebase Storage
-            com.example.chroniccare.utils.FirebaseStorageHelper storageHelper = 
+            com.example.chroniccare.utils.FirebaseStorageHelper storageHelper =
                 new com.example.chroniccare.utils.FirebaseStorageHelper(currentUserId);
-            
+
             storageHelper.uploadDocument(uri, storedFileName, new com.example.chroniccare.utils.FirebaseStorageHelper.UploadCallback() {
                 @Override
                 public void onSuccess(String downloadUrl) {
                     Log.d("ProfileActivity", "✅ Upload successful! Download URL: " + downloadUrl);
                     progressDialog.dismiss();
-                    
+
                     // Save to local database
                     MedicalDocument document = new MedicalDocument();
                     document.userId = currentUserId;
@@ -608,15 +655,15 @@ public class ProfileActivity extends BaseActivity {
                     document.documentUri = downloadUrl; // Store Firebase URL
                     document.uploadDate = System.currentTimeMillis();
                     document.fileSize = fileSize;
-                    
+
                     Log.d("ProfileActivity", "Saving to local DB with URL: " + downloadUrl);
-                    
+
                     if (executorService != null && !executorService.isShutdown()) {
                         executorService.execute(() -> {
                             try {
                                 db.medicalDocumentDao().insert(document);
                                 Log.d("ProfileActivity", "✅ Saved to local database");
-                                
+
                                 // Sync metadata to Firestore
                                 java.util.HashMap<String, Object> docData = new java.util.HashMap<>();
                                 docData.put("documentName", document.documentName);
@@ -625,12 +672,12 @@ public class ProfileActivity extends BaseActivity {
                                 docData.put("fileName", storedFileName);
                                 docData.put("uploadDate", document.uploadDate);
                                 docData.put("fileSize", document.fileSize);
-                                
+
                                 if (firebaseSync != null) {
                                     firebaseSync.syncDocument(String.valueOf(System.currentTimeMillis()), docData);
                                     Log.d("ProfileActivity", "✅ Synced to Firestore");
                                 }
-                                
+
                                 runOnUiThread(() -> {
                                     Toast.makeText(ProfileActivity.this, getString(R.string.profile_document_uploaded_toast, docType), Toast.LENGTH_SHORT).show();
                                     selectedDocumentUri = null;
@@ -642,14 +689,14 @@ public class ProfileActivity extends BaseActivity {
                         });
                     }
                 }
-                
+
                 @Override
                 public void onFailure(String error) {
                     Log.e("ProfileActivity", "❌ Upload failed: " + error);
                     progressDialog.dismiss();
                     Toast.makeText(ProfileActivity.this, getString(R.string.profile_upload_failed_toast, error), Toast.LENGTH_SHORT).show();
                 }
-                
+
                 @Override
                 public void onProgress(int progress) {
                     progressDialog.setProgress(progress);
@@ -681,65 +728,96 @@ public class ProfileActivity extends BaseActivity {
         } catch (Exception ignored) {}
         return name;
     }
-    
+
     private void loadConsistencyGrid() {
         android.widget.GridLayout grid = findViewById(R.id.consistencyGrid);
         grid.removeAllViews();
-        
+
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        
-        int size = (int) (8 * getResources().getDisplayMetrics().density);
+
+        // Calculate size to fill the card width
+        int cardPadding = (int) (40 * getResources().getDisplayMetrics().density); // 20dp padding on each side
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int availableWidth = screenWidth - cardPadding - (int) (32 * getResources().getDisplayMetrics().density); // margins
         int margin = (int) (2 * getResources().getDisplayMetrics().density);
-        
-        // Create all 84 grey squares first
-        for (int i = 83; i >= 0; i--) {
-            View square = new View(this);
-            android.widget.GridLayout.LayoutParams params = new android.widget.GridLayout.LayoutParams();
-            params.width = size;
-            params.height = size;
-            params.setMargins(margin, margin, margin, margin);
-            square.setLayoutParams(params);
-            square.setBackgroundColor(0xFFEEEEEE); // Grey by default
-            square.setTag(i); // Store index for later update
-            grid.addView(square);
-        }
-        
-        // Then fetch data and update colors
+        int totalMargins = margin * 2 * 12; // margins for 12 columns
+        int size = (availableWidth - totalMargins) / 12;
+
+        // Fetch data first
         com.google.firebase.firestore.FirebaseFirestore.getInstance()
             .collection("users").document(currentUserId)
             .collection("medicationAdherence")
             .get()
             .addOnSuccessListener(querySnapshot -> {
                 java.util.Map<String, Integer> dailyData = new java.util.HashMap<>();
-                
+
                 for (com.google.firebase.firestore.QueryDocumentSnapshot doc : querySnapshot) {
                     String date = doc.getId();
                     Long taken = doc.getLong("taken");
-                    
                     if (taken != null && taken > 0) {
                         dailyData.put(date, taken.intValue());
                     }
                 }
-                
-                // Update colors for days with data
-                for (int i = 0; i < grid.getChildCount(); i++) {
-                    View square = grid.getChildAt(i);
-                    int dayIndex = (int) square.getTag();
-                    
-                    Calendar dayCal = (Calendar) cal.clone();
-                    dayCal.add(Calendar.DAY_OF_YEAR, -(83 - dayIndex));
-                    String dateKey = sdf.format(dayCal.getTime());
-                    
-                    Integer takenCount = dailyData.get(dateKey);
-                    if (takenCount != null && takenCount > 0) {
-                        int color = takenCount >= 3 ? 0xFF2E7D32 : 0xFFA5D6A7;
-                        square.setBackgroundColor(color);
+
+                // Add dummy data for demonstration
+                Calendar dummyCal = (Calendar) cal.clone();
+                for (int i = 0; i < 30; i++) {
+                    dummyCal.add(Calendar.DAY_OF_YEAR, -1);
+                    String dummyDate = sdf.format(dummyCal.getTime());
+                    if (!dailyData.containsKey(dummyDate)) {
+                        dailyData.put(dummyDate, (i % 3 == 0) ? 4 : (i % 2 == 0) ? 2 : 0);
+                    }
+                }
+
+                // Create grid: 7 rows (days of week) x 12 columns (weeks)
+                for (int col = 0; col < 12; col++) {
+                    for (int row = 0; row < 7; row++) {
+                        int dayOffset = (col * 7) + row;
+
+                        Calendar dayCal = (Calendar) cal.clone();
+                        dayCal.add(Calendar.DAY_OF_YEAR, -(83 - dayOffset));
+                        String dateKey = sdf.format(dayCal.getTime());
+
+                        View square = new View(this);
+                        android.widget.GridLayout.LayoutParams params = new android.widget.GridLayout.LayoutParams();
+                        params.width = size;
+                        params.height = size;
+                        params.setMargins(margin, margin, margin, margin);
+                        params.rowSpec = android.widget.GridLayout.spec(row);
+                        params.columnSpec = android.widget.GridLayout.spec(col, 1f);
+                        square.setLayoutParams(params);
+
+                        Integer takenCount = dailyData.get(dateKey);
+                        if (takenCount != null && takenCount > 0) {
+                            square.setBackgroundColor(takenCount >= 3 ? 0xFF87CEEB : 0xFFA5D6A7);
+                        } else {
+                            square.setBackgroundColor(0xFF008080);
+                        }
+
+                        grid.addView(square);
+                    }
+                }
+            })
+            .addOnFailureListener(e -> {
+                // Show empty grid on failure
+                for (int col = 0; col < 12; col++) {
+                    for (int row = 0; row < 7; row++) {
+                        View square = new View(this);
+                        android.widget.GridLayout.LayoutParams params = new android.widget.GridLayout.LayoutParams();
+                        params.width = size;
+                        params.height = size;
+                        params.setMargins(margin, margin, margin, margin);
+                        params.rowSpec = android.widget.GridLayout.spec(row);
+                        params.columnSpec = android.widget.GridLayout.spec(col, 1f);
+                        square.setLayoutParams(params);
+                        square.setBackgroundColor(0xFF000000);
+                        grid.addView(square);
                     }
                 }
             });
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
