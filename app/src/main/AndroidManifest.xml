@@ -64,7 +64,8 @@
             android:theme="@style/Theme.ChronicCare" />
         <activity
             android:name=".DrGPTActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".FitHubActivity"
             android:exported="false" />
