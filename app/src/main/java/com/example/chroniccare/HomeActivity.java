@@ -32,7 +32,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -81,7 +83,8 @@ public class HomeActivity extends BottomNavActivity {
         updateUserName(account);
         ProfileImageHelper.loadProfileImage(this, profileImage);
         updateInitialReadings();
-        loadNextMedication();
+        
+        // This will now handle both schedule and next medication in real-time
         loadTodaysSchedule();
 
         setupClickListeners();
@@ -110,7 +113,6 @@ public class HomeActivity extends BottomNavActivity {
     protected void onResume() {
         super.onResume();
         loadTodaysSchedule();
-        loadNextMedication();
         ProfileImageHelper.loadProfileImage(this, profileImage);
     }
 
@@ -222,68 +224,39 @@ public class HomeActivity extends BottomNavActivity {
         lastCheckedTime.setText("Last checked at " + time);
     }
 
-    private void loadNextMedication() {
-        String userId = null;
+    private void updateNextMedicationFromSnapshot(List<QueryDocumentSnapshot> medications) {
+        Calendar now = Calendar.getInstance();
+        QueryDocumentSnapshot nextMed = null;
+        long minDiff = Long.MAX_VALUE;
         
-        if (auth.getCurrentUser() != null) {
-            userId = auth.getCurrentUser().getUid();
-        } else {
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-            if (account != null) {
-                userId = account.getId();
+        for (QueryDocumentSnapshot doc : medications) {
+            Boolean taken = doc.getBoolean("taken");
+            if (Boolean.TRUE.equals(taken)) continue;
+
+            Timestamp timestamp = doc.getTimestamp("timestamp");
+            if (timestamp != null) {
+                Calendar medTime = Calendar.getInstance();
+                medTime.setTime(timestamp.toDate());
+                
+                // Get time difference
+                long diff = medTime.getTimeInMillis() - now.getTimeInMillis();
+                
+                // If in future and closer than current min
+                if (diff > 0 && diff < minDiff) {
+                    minDiff = diff;
+                    nextMed = doc;
+                }
             }
         }
         
-        if (userId == null) {
-            nextMedicationName.setText("No medications");
+        if (nextMed != null) {
+            updateNextMedicationUI(nextMed, minDiff);
+        } else {
+            nextMedicationName.setText("No upcoming");
             nextMedicationDose.setText("");
             medTiming.setText("");
             foodInstruction.setText("");
-            return;
         }
-
-        Calendar now = Calendar.getInstance();
-        
-        firestore.collection("users").document(userId).collection("medications")
-                .whereEqualTo("taken", false)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    QueryDocumentSnapshot nextMed = null;
-                    long minDiff = Long.MAX_VALUE;
-                    
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Timestamp timestamp = doc.getTimestamp("timestamp");
-                        if (timestamp != null) {
-                            Calendar medTime = Calendar.getInstance();
-                            medTime.setTime(timestamp.toDate());
-                            
-                            // Get time difference
-                            long diff = medTime.getTimeInMillis() - now.getTimeInMillis();
-                            
-                            // If in future and closer than current min
-                            if (diff > 0 && diff < minDiff) {
-                                minDiff = diff;
-                                nextMed = doc;
-                            }
-                        }
-                    }
-                    
-                    if (nextMed != null) {
-                        updateNextMedicationUI(nextMed, minDiff);
-                    } else {
-                        nextMedicationName.setText("No upcoming");
-                        nextMedicationDose.setText("");
-                        medTiming.setText("");
-                        foodInstruction.setText("");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading next medication", e);
-                    nextMedicationName.setText("Error loading");
-                    nextMedicationDose.setText("");
-                    medTiming.setText("");
-                    foodInstruction.setText("");
-                });
     }
 
     private void updateNextMedicationUI(QueryDocumentSnapshot doc, long millisUntil) {
@@ -327,7 +300,8 @@ public class HomeActivity extends BottomNavActivity {
         updateTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                loadNextMedication();
+                // We still need this to update the "Due in X minutes" text as time passes
+                loadTodaysSchedule(); 
                 handler.postDelayed(this, 60000); // Update every minute
             }
         };
@@ -411,9 +385,15 @@ public class HomeActivity extends BottomNavActivity {
                     
                     if (queryDocumentSnapshots != null) {
                         todaysScheduleContainer.removeAllViews();
+                        List<QueryDocumentSnapshot> medList = new ArrayList<>();
+                        
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             addMedicationRow(document);
+                            medList.add(document);
                         }
+                        
+                        // NEW: Also update the "Next Medication" UI using the same live data
+                        updateNextMedicationFromSnapshot(medList);
                     }
                 });
     }
@@ -461,8 +441,6 @@ public class HomeActivity extends BottomNavActivity {
                     .update("taken", false, "takenAt", null)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Medication unmarked", Toast.LENGTH_SHORT).show();
-                        loadTodaysSchedule();
-                        loadNextMedication();
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error updating medication", e);
@@ -476,8 +454,6 @@ public class HomeActivity extends BottomNavActivity {
                     .update("taken", true, "takenAt", now)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Medication taken", Toast.LENGTH_SHORT).show();
-                        loadTodaysSchedule();
-                        loadNextMedication();
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error updating medication", e);
