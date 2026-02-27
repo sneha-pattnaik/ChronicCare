@@ -10,7 +10,7 @@
         android:id="@+id/scheduleTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="8:30 AM"
+        android:text="@string/home_schedule_time_placeholder"
         android:textSize="16sp"
         android:textColor="#1a1a1a"
         android:layout_marginRight="16dp"/>
@@ -20,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Morning Medication"
+        android:text="@string/home_schedule_title_placeholder"
         android:textSize="16sp"
         android:textColor="#333333"/>
 

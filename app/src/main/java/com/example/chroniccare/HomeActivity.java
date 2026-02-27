@@ -93,14 +93,14 @@ public class HomeActivity extends BottomNavActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 new AlertDialog.Builder(this)
-                    .setTitle("Permission Required")
-                    .setMessage("ChronicCare needs permission to show alarms when your phone is locked.\n\nThis ensures you never miss your medication reminders.")
-                    .setPositiveButton("Grant Permission", (dialog, which) -> {
+                    .setTitle(getString(R.string.home_permission_title))
+                    .setMessage(getString(R.string.home_permission_message))
+                    .setPositiveButton(getString(R.string.home_permission_grant), (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                         intent.setData(Uri.parse("package:" + getPackageName()));
                         startActivity(intent);
                     })
-                    .setNegativeButton("Later", null)
+                    .setNegativeButton(getString(R.string.home_permission_later), null)
                     .show();
             }
         }
@@ -160,9 +160,9 @@ public class HomeActivity extends BottomNavActivity {
 
     private void updateGreeting() {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour < 12) mainPageGreeting.setText("Good Morning,");
-        else if (hour < 17) mainPageGreeting.setText("Good Afternoon,");
-        else mainPageGreeting.setText("Good Evening,");
+        if (hour < 12) mainPageGreeting.setText(getString(R.string.home_greeting_morning));
+        else if (hour < 17) mainPageGreeting.setText(getString(R.string.home_greeting_afternoon));
+        else mainPageGreeting.setText(getString(R.string.home_greeting_evening));
     }
 
     private void updateDate() {
@@ -175,7 +175,7 @@ public class HomeActivity extends BottomNavActivity {
 
     private void updateUserName(GoogleSignInAccount account) {
 
-        String fullName = "User";
+        String fullName = getString(R.string.home_default_user_name);
 
         if (account != null) {
             if (account.getDisplayName() != null)
@@ -185,7 +185,7 @@ public class HomeActivity extends BottomNavActivity {
             else if (account.getEmail() != null)
                 fullName = account.getEmail();
         } else {
-            fullName = sharedPreferences.getString("userName", "User");
+            fullName = sharedPreferences.getString("userName", getString(R.string.home_default_user_name));
         }
 
         String displayName = formatName(fullName);
@@ -195,7 +195,7 @@ public class HomeActivity extends BottomNavActivity {
     private String formatName(String name) {
 
         if (name == null || name.trim().isEmpty())
-            return "User";
+            return getString(R.string.home_default_user_name);
 
         name = name.trim();
 
@@ -212,14 +212,14 @@ public class HomeActivity extends BottomNavActivity {
 
 
     private void updateInitialReadings() {
-        currentReadingValue.setText("128");
+        currentReadingValue.setText(getString(R.string.home_default_reading));
         updateLastCheckedTime();
     }
 
     private void updateLastCheckedTime() {
         String time = new SimpleDateFormat("h:mma", Locale.getDefault())
                 .format(Calendar.getInstance().getTime()).toLowerCase();
-        lastCheckedTime.setText("Last checked at " + time);
+        lastCheckedTime.setText(getString(R.string.home_last_checked_at, time));
     }
 
     private void loadNextMedication() {
@@ -235,7 +235,7 @@ public class HomeActivity extends BottomNavActivity {
         }
         
         if (userId == null) {
-            nextMedicationName.setText("No medications");
+            nextMedicationName.setText(getString(R.string.home_no_medications));
             nextMedicationDose.setText("");
             medTiming.setText("");
             foodInstruction.setText("");
@@ -271,7 +271,7 @@ public class HomeActivity extends BottomNavActivity {
                     if (nextMed != null) {
                         updateNextMedicationUI(nextMed, minDiff);
                     } else {
-                        nextMedicationName.setText("No upcoming");
+                        nextMedicationName.setText(getString(R.string.home_no_upcoming));
                         nextMedicationDose.setText("");
                         medTiming.setText("");
                         foodInstruction.setText("");
@@ -279,7 +279,7 @@ public class HomeActivity extends BottomNavActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading next medication", e);
-                    nextMedicationName.setText("Error loading");
+                    nextMedicationName.setText(getString(R.string.home_error_loading));
                     nextMedicationDose.setText("");
                     medTiming.setText("");
                     foodInstruction.setText("");
@@ -299,7 +299,7 @@ public class HomeActivity extends BottomNavActivity {
             nextMedicationName.setText(medName);
             nextMedicationDose.setText(dose);
         } else {
-            nextMedicationName.setText(fullName != null ? fullName : "Medication");
+            nextMedicationName.setText(fullName != null ? fullName : getString(R.string.home_default_medication));
             nextMedicationDose.setText("");
         }
         
@@ -310,16 +310,19 @@ public class HomeActivity extends BottomNavActivity {
         
         String timeText;
         if (days > 0) {
-            timeText = "Due in " + days + " day" + (days > 1 ? "s" : "");
+            int daysInt = (int) days;
+            timeText = getResources().getQuantityString(R.plurals.home_due_days, daysInt, daysInt);
         } else if (hours > 0) {
-            timeText = "Due in " + hours + " hr" + (hours > 1 ? "s" : "");
+            int hoursInt = (int) hours;
+            timeText = getResources().getQuantityString(R.plurals.home_due_hours, hoursInt, hoursInt);
         } else if (minutes > 0) {
-            timeText = "Due in " + minutes + " min" + (minutes > 1 ? "s" : "");
+            int minutesInt = (int) minutes;
+            timeText = getResources().getQuantityString(R.plurals.home_due_minutes, minutesInt, minutesInt);
         } else {
-            timeText = "Due Now";
+            timeText = getString(R.string.home_due_now);
         }
-        
-        medTiming.setText(timeText + " -");
+
+        medTiming.setText(getString(R.string.home_due_with_separator, timeText));
         foodInstruction.setText(mealTime != null ? mealTime : "");
     }
 
@@ -340,11 +343,11 @@ public class HomeActivity extends BottomNavActivity {
             int reading = 80 + random.nextInt(120);
             currentReadingValue.setText(String.valueOf(reading));
             updateLastCheckedTime();
-            Toast.makeText(this, "Reading logged", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.home_reading_logged_toast), Toast.LENGTH_SHORT).show();
         });
 
         btnTakeNow.setOnClickListener(v -> {
-            Toast.makeText(this, "Mark medications from schedule below", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.home_mark_medications_toast), Toast.LENGTH_SHORT).show();
         });
         
 //        btnStopAlarm.setOnClickListener(v -> {
@@ -367,7 +370,7 @@ public class HomeActivity extends BottomNavActivity {
     private void stopAllAlarms() {
         Intent serviceIntent = new Intent(this, AlarmForegroundService.class);
         stopService(serviceIntent);
-        Toast.makeText(this, "All alarms stopped", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.home_all_alarms_stopped_toast), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -453,37 +456,62 @@ public class HomeActivity extends BottomNavActivity {
         
         if (userId == null) return;
         
+        final String finalUserId = userId;
+        
         // Toggle taken status
         if (Boolean.TRUE.equals(taken)) {
             // Unmark as taken
-            firestore.collection("users").document(userId).collection("medications")
+            firestore.collection("users").document(finalUserId).collection("medications")
                     .document(document.getId())
                     .update("taken", false, "takenAt", null)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Medication unmarked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.home_med_unmarked_toast), Toast.LENGTH_SHORT).show();
                         loadTodaysSchedule();
                         loadNextMedication();
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error updating medication", e);
-                        Toast.makeText(this, "Error updating medication", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.home_med_update_error_toast), Toast.LENGTH_SHORT).show();
                     });
         } else {
             // Mark as taken
             Timestamp now = Timestamp.now();
-            firestore.collection("users").document(userId).collection("medications")
+            firestore.collection("users").document(finalUserId).collection("medications")
                     .document(document.getId())
                     .update("taken", true, "takenAt", now)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Medication taken", Toast.LENGTH_SHORT).show();
+                        updateDailyAdherence(finalUserId, now);
+                        Toast.makeText(this, getString(R.string.home_med_taken_toast), Toast.LENGTH_SHORT).show();
                         loadTodaysSchedule();
                         loadNextMedication();
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error updating medication", e);
-                        Toast.makeText(this, "Error updating medication", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.home_med_update_error_toast), Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+    
+    private void updateDailyAdherence(String userId, Timestamp timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateKey = sdf.format(timestamp.toDate());
+        
+        firestore.collection("users").document(userId)
+                .collection("medicationAdherence").document(dateKey)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    int taken = doc.exists() && doc.getLong("taken") != null ? doc.getLong("taken").intValue() : 0;
+                    int total = doc.exists() && doc.getLong("total") != null ? doc.getLong("total").intValue() : 0;
+                    
+                    java.util.Map<String, Object> data = new java.util.HashMap<>();
+                    data.put("taken", taken + 1);
+                    data.put("total", total > 0 ? total : taken + 1);
+                    data.put("date", timestamp);
+                    
+                    firestore.collection("users").document(userId)
+                            .collection("medicationAdherence").document(dateKey)
+                            .set(data);
+                });
     }
 
 }
