@@ -41,15 +41,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profileImage"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
+                android:scaleType="centerCrop"
                 android:src="@color/white"
-                app:civ_border_color="#FFFFFF"
-                app:civ_border_width="4dp" />
+                app:shapeAppearanceOverlay="@style/RoundedSquare"
+                app:strokeColor="#FFFFFF"
+                app:strokeWidth="4dp" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/btnChangePhoto"
@@ -129,13 +131,15 @@
                             android:orientation="horizontal"
                             android:padding="16dp">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
+                            <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/ivFamilyMemberProfile"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
+                                android:scaleType="centerCrop"
                                 android:src="@drawable/ic_profile"
-                                app:civ_border_color="#26A69A"
-                                app:civ_border_width="2dp" />
+                                app:shapeAppearanceOverlay="@style/RoundedSquare"
+                                app:strokeColor="#26A69A"
+                                app:strokeWidth="2dp" />
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -327,6 +331,7 @@
                                     android:tint="#26A69A" />
 
                                 <TextView
+                                    android:id="@+id/tvFamilyInsurance"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="16dp"
