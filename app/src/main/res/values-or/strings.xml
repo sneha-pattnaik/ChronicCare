@@ -109,3 +109,15 @@
     <string name="daily_workout_series">ଦୈନିକ ବ୍ୟାୟାମ ଶୃଙ୍ଖଳା</string>
     <string name="playlist">ପ୍ଲେଲିଷ୍ଟ</string>
 </resources>
+    <string name="fithub_breakfast">ପ୍ରାତଃରାଶ</string>
+    <string name="fithub_lunch">ମଧ୍ୟାହ୍ନ ଭୋଜନ</string>
+    <string name="fithub_dinner">ରାତ୍ରୀ ଭୋଜନ</string>
+    <string name="medications_today_doses">ଆଜିର ଔଷଧ</string>
+    <string name="medications_upcoming">ଆଗାମୀ</string>
+    <string name="medications_missed">ଛାଡ଼ିଦିଆଯାଇଛି</string>
+    <string name="add_med_morning">ସକାଳ</string>
+    <string name="add_med_afternoon">ଅପରାହ୍ନ</string>
+    <string name="add_med_night">ରାତି</string>
+    <string name="add_med_before_food">B/F</string>
+    <string name="add_med_after_food">A/F</string>
+</resources>

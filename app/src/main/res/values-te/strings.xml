@@ -45,3 +45,15 @@
     <string name="daily_workout_series">రోజువారీ వ్యాయామ శ్రేణి</string>
     <string name="playlist">ప్లేలిస్ట్</string>
 </resources>
+    <string name="fithub_breakfast">అల్పాహారం</string>
+    <string name="fithub_lunch">మధ్యాహ్న భోజనం</string>
+    <string name="fithub_dinner">రాత్రి భోజనం</string>
+    <string name="medications_today_doses">నేటి మందులు</string>
+    <string name="medications_upcoming">రాబోయే</string>
+    <string name="medications_missed">తప్పిపోయింది</string>
+    <string name="add_med_morning">ఉదయం</string>
+    <string name="add_med_afternoon">మధ్యాహ్నం</string>
+    <string name="add_med_night">రాత్రి</string>
+    <string name="add_med_before_food">B/F</string>
+    <string name="add_med_after_food">A/F</string>
+</resources>

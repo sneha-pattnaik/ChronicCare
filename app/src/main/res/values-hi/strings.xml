@@ -145,6 +145,40 @@
     <string name="drgpt_low_sugar">📉 कम शर्करा</string>
     <string name="drgpt_feeling_tired">😴 थकान महसूस हो रही है</string>
 
+    <!-- FitHub -->
+    <string name="fithub_title">FitHub</string>
+    <string name="fithub_subtitle">फिट रहें, खुश रहें।</string>
+    <string name="fithub_log_food">भोजन लॉग करें</string>
+    <string name="fithub_log_exercise">व्यायाम लॉग करें</string>
+    <string name="fithub_meal_plan_title">आज की भोजन योजना</string>
+    <string name="fithub_breakfast">नाश्ता</string>
+    <string name="fithub_lunch">दोपहर का भोजन</string>
+    <string name="fithub_dinner">रात का खाना</string>
+    <string name="fithub_swap_meal">भोजन बदलें</string>
+    <string name="fithub_cal">cal</string>
+    <string name="fithub_carbs_g">carbs</string>
+    <string name="fithub_low_sugar">Low sugar</string>
+    <string name="fithub_high_fiber">High fiber</string>
+    <string name="fithub_high_protein">High protein</string>
+
+    <!-- Medications -->
+    <string name="medications_stay_on_track">अपनी दैनिक खुराक पर नज़र रखें</string>
+    <string name="medications_today_doses">आज की खुराक</string>
+    <string name="medications_upcoming">आगामी</string>
+    <string name="medications_missed">छूटी हुई</string>
+    <string name="medications_my_medications">मेरी दवाएं</string>
+    <string name="medications_add">जोड़ें</string>
+    <string name="add_med_schedule_reminder">अपनी दवा अनुस्मारक शेड्यूल करें</string>
+    <string name="add_med_scan_prescription">Prescription स्कैन करें</string>
+    <string name="add_med_medication_name">दवा का नाम</string>
+    <string name="add_med_dosage">खुराक</string>
+    <string name="add_med_daily_schedule">दैनिक कार्यक्रम</string>
+    <string name="add_med_morning">सुबह</string>
+    <string name="add_med_afternoon">दोपहर</string>
+    <string name="add_med_night">रात</string>
+    <string name="add_med_before_food">B/F</string>
+    <string name="add_med_after_food">A/F</string>
+
     <!-- Common -->
     <string name="common_ok">ठीक है</string>
     <string name="common_cancel">रद्द करें</string>

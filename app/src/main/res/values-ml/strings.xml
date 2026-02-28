@@ -45,3 +45,15 @@
     <string name="daily_workout_series">ദൈനംദിന വ്യായാമ പരമ്പര</string>
     <string name="playlist">പ്ലേലിസ്റ്റ്</string>
 </resources>
+    <string name="fithub_breakfast">പ്രഭാതഭക്ഷണം</string>
+    <string name="fithub_lunch">ഉച്ചഭക്ഷണം</string>
+    <string name="fithub_dinner">അത്താഴം</string>
+    <string name="medications_today_doses">ഇന്നത്തെ മരുന്നുകൾ</string>
+    <string name="medications_upcoming">വരാനിരിക്കുന്നത്</string>
+    <string name="medications_missed">നഷ്ടമായത്</string>
+    <string name="add_med_morning">രാവിലെ</string>
+    <string name="add_med_afternoon">ഉച്ചയ്ക്ക്</string>
+    <string name="add_med_night">രാത്രി</string>
+    <string name="add_med_before_food">B/F</string>
+    <string name="add_med_after_food">A/F</string>
+</resources>

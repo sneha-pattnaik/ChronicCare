@@ -331,6 +331,53 @@
     <string name="common_success">Success</string>
     <string name="common_failed">Failed</string>
 
+    <!-- FitHub -->
+    <string name="fithub_title">FitHub</string>
+    <string name="fithub_subtitle">Stay fit, Live happier.</string>
+    <string name="fithub_log_food">Log Food</string>
+    <string name="fithub_log_exercise">Log Exercise</string>
+    <string name="fithub_meal_plan_title">Today\'s Meal Plan</string>
+    <string name="fithub_breakfast">Breakfast</string>
+    <string name="fithub_lunch">Lunch</string>
+    <string name="fithub_dinner">Dinner</string>
+    <string name="fithub_swap_meal">Swap Meal</string>
+    <string name="fithub_quick_workouts_title">Quick Workouts</string>
+    <string name="fithub_recommended_title">Recommended For You</string>
+    <string name="fithub_daily_workout_series">Daily Workout Series</string>
+    <string name="fithub_playlist">Playlist</string>
+    <string name="fithub_open_link_failed_toast">Unable to open link</string>
+    <string name="fithub_cal">cal</string>
+    <string name="fithub_carbs_g">carbs</string>
+    <string name="fithub_low_sugar">Low sugar</string>
+    <string name="fithub_high_fiber">High fiber</string>
+    <string name="fithub_high_protein">High protein</string>
+    <string name="fithub_easy_prep">Easy prep</string>
+
+    <!-- Medications Screen -->
+    <string name="medications_stay_on_track">Stay on track with your daily doses</string>
+    <string name="medications_today_doses">Today Doses</string>
+    <string name="medications_upcoming">Upcoming</string>
+    <string name="medications_missed">Missed</string>
+    <string name="medications_my_medications">My Medications</string>
+    <string name="medications_add">Add</string>
+    <string name="medications_refill_required">Refill required - %1$s days remaining</string>
+    <string name="medications_due_in_min">Due in %1$s min - %2$s</string>
+    <string name="medications_due_at">Due @ %1$s - %2$s</string>
+    <string name="medications_tablet_daily">%1$s - %2$s tablet daily %3$s</string>
+
+    <!-- Add Medications -->
+    <string name="add_med_schedule_reminder">Schedule your medication reminder</string>
+    <string name="add_med_scan_prescription">Scan Prescription</string>
+    <string name="add_med_scan_description">Take a photo to auto-fill medication details</string>
+    <string name="add_med_medication_name">Medication Name</string>
+    <string name="add_med_dosage">Dosage</string>
+    <string name="add_med_daily_schedule">Daily Schedule</string>
+    <string name="add_med_morning">Morning</string>
+    <string name="add_med_afternoon">Afternoon</string>
+    <string name="add_med_night">Night</string>
+    <string name="add_med_before_food">B/F</string>
+    <string name="add_med_after_food">A/F</string>
+
     <!-- Additional Home Strings -->
     <string name="home_default_reading_value">128</string>
     <string name="home_last_checked_prefix">Last checked at </string>
