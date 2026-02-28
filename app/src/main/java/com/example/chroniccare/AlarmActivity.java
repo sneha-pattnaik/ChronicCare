@@ -31,7 +31,9 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AlarmActivity extends AppCompatActivity {
 
@@ -295,20 +297,45 @@ public class AlarmActivity extends AppCompatActivity {
         }
         if (userId == null) return;
 
+        final String finalUserId = userId;
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
 
-        firestore.collection("users").document(userId).collection("medications")
+        firestore.collection("users").document(finalUserId).collection("medications")
                 .whereEqualTo("name", medicationName)
                 .whereGreaterThanOrEqualTo("timestamp", new Timestamp(today.getTime()))
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
+                        Timestamp now = Timestamp.now();
                         querySnapshot.getDocuments().get(0).getReference()
-                                .update("taken", true, "takenAt", Timestamp.now());
+                                .update("taken", true, "takenAt", now)
+                                .addOnSuccessListener(aVoid -> updateDailyAdherence(finalUserId, now));
                     }
+                });
+    }
+    
+    private void updateDailyAdherence(String userId, Timestamp timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateKey = sdf.format(timestamp.toDate());
+        
+        firestore.collection("users").document(userId)
+                .collection("medicationAdherence").document(dateKey)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    int taken = doc.exists() && doc.getLong("taken") != null ? doc.getLong("taken").intValue() : 0;
+                    int total = doc.exists() && doc.getLong("total") != null ? doc.getLong("total").intValue() : 0;
+                    
+                    java.util.Map<String, Object> data = new java.util.HashMap<>();
+                    data.put("taken", taken + 1);
+                    data.put("total", total > 0 ? total : taken + 1);
+                    data.put("date", timestamp);
+                    
+                    firestore.collection("users").document(userId)
+                            .collection("medicationAdherence").document(dateKey)
+                            .set(data);
                 });
     }
 
